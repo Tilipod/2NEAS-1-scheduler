@@ -1,6 +1,18 @@
 spring:
   application:
     name: scheduler
+  datasource:
+    url: jdbc:postgresql://${PG_HOST:localhost}:${PG_PORT:55000}/${DB_NAME:2neas-1}
+    driver-class-name: org.postgresql.Driver
+    username: ${PG_USERNAME:postgres}
+    password: ${PG_PASSWORD:postgres}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+  liquibase:
+    change-log: classpath:db-migrations/changelog.xml
 
 server:
   port: ${PORT:50003}
