@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: scheduler
+
+server:
+  port: ${PORT:50003}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:50001/eureka/}
