@@ -6,9 +6,11 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -25,6 +27,7 @@ import java.util.UUID;
 @EqualsAndHashCode
 @ToString
 @Table(name = "task")
+@EntityListeners(AuditingEntityListener.class)
 public class Task {
 
     @Id

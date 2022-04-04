@@ -101,6 +101,11 @@
 
             <column type="number" name="harmony" defaultValue="0.0"/>
 
+            <column type="bigint" name="course_id">
+                <constraints nullable="false" unique="true" foreignKeyName="supervision_course_foreign_key"
+                             references="course(id)" deleteCascade="true"/>
+            </column>
+
             <column type="timestamptz" name="created_date_time">
                 <constraints nullable="false"/>
             </column>

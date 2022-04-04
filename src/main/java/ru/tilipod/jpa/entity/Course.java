@@ -6,8 +6,10 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,6 +26,7 @@ import java.time.ZonedDateTime;
 @EqualsAndHashCode
 @ToString
 @Table(name = "course")
+@EntityListeners(AuditingEntityListener.class)
 public class Course {
 
     @Id
