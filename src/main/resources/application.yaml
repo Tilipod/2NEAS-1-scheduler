@@ -36,3 +36,4 @@ eureka:
 
 queues:
   parserResult: "parserResult"
+  distributorResult: "distributorResult"

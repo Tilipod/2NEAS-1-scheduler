@@ -35,6 +35,9 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     @Value("${queues.parserResult}")
     private String parserResultQueueName;
 
+    @Value("${queues.distributorResult}")
+    private String distributorResultQueueName;
+
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
         registrar.setMessageHandlerMethodFactory(myHandlerMethodFactory());
@@ -91,8 +94,18 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
+    public Exchange exchangeDistributor() {
+        return new DirectExchange(ExchangeNames.DISTRIBUTOR);
+    }
+
+    @Bean
     Queue parserResultQueue() {
         return new Queue(parserResultQueueName);
+    }
+
+    @Bean
+    Queue distributorResultQueue() {
+        return new Queue(distributorResultQueueName);
     }
 
     @Bean
@@ -100,6 +113,14 @@ public class AmqpConfig implements RabbitListenerConfigurer {
         return BindingBuilder.bind(parserResultQueue())
                 .to(exchangeParser())
                 .with(RoutingKeys.PARSER_RESULT_KEY)
+                .noargs();
+    }
+
+    @Bean
+    public Binding distributorResultQueueToExchangeDistributorBinding() {
+        return BindingBuilder.bind(distributorResultQueue())
+                .to(exchangeDistributor())
+                .with(RoutingKeys.DITRIBUTOR_RESULT_KEY)
                 .noargs();
     }
 
