@@ -35,8 +35,11 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     @Value("${queues.parserResult}")
     private String parserResultQueueName;
 
-    @Value("${queues.distributorResult}")
-    private String distributorResultQueueName;
+    @Value("${queues.distributorResultSuccess}")
+    private String distributorResultSuccessQueueName;
+
+    @Value("${queues.distributorResultError}")
+    private String distributorResultErrorQueueName;
 
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
@@ -104,8 +107,13 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
-    Queue distributorResultQueue() {
-        return new Queue(distributorResultQueueName);
+    Queue distributorResultSuccessQueue() {
+        return new Queue(distributorResultSuccessQueueName);
+    }
+
+    @Bean
+    Queue distributorResultErrorQueue() {
+        return new Queue(distributorResultErrorQueueName);
     }
 
     @Bean
@@ -117,10 +125,18 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public Binding distributorResultQueueToExchangeDistributorBinding() {
-        return BindingBuilder.bind(distributorResultQueue())
+    public Binding distributorResultSuccessQueueToExchangeDistributorBinding() {
+        return BindingBuilder.bind(distributorResultSuccessQueue())
                 .to(exchangeDistributor())
-                .with(RoutingKeys.DITRIBUTOR_RESULT_KEY)
+                .with(RoutingKeys.DISTRIBUTOR_RESULT_SUCCESS_KEY)
+                .noargs();
+    }
+
+    @Bean
+    public Binding distributorResultErrorQueueToExchangeDistributorBinding() {
+        return BindingBuilder.bind(distributorResultErrorQueue())
+                .to(exchangeDistributor())
+                .with(RoutingKeys.DISTRIBUTOR_RESULT_ERROR_KEY)
                 .noargs();
     }
 

@@ -2,7 +2,7 @@ spring:
   application:
     name: scheduler
   datasource:
-    url: jdbc:postgresql://${PG_HOST:localhost}:${PG_PORT:55000}/${DB_NAME:2neas-1}
+    url: jdbc:postgresql://${PG_HOST:localhost}:${PG_PORT:55010}/${DB_NAME:2neas-1}
     driver-class-name: org.postgresql.Driver
     username: ${PG_USERNAME:postgres}
     password: ${PG_PASSWORD:postgres}
@@ -36,4 +36,5 @@ eureka:
 
 queues:
   parserResult: "parserResult"
-  distributorResult: "distributorResult"
+  distributorResultSuccess: "distributorResultSuccess"
+  distributorResultError: "distributorResultError"
