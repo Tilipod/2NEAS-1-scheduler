@@ -34,6 +34,38 @@ eureka:
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:50001/eureka/}
 
+quartz:
+  enabled: true
+
+scheduler:
+  jobDetails:
+    - name: CreatedTaskSendToParserJob
+      group: PARSER
+      description: Отправляет задачи на анализ в парсер
+      jobClass: ru.tilipod.quartz.job.CreatedTaskSendToParserJob
+      jobDataMap:
+        - pageSize: 20
+      triggers:
+        - name: CreatedTaskSendToParserJobCronTrigger
+          triggerType: CRON
+          cronExpression: "0 * * ? * *"
+          startTime:
+          priority: 1
+          startDelay: 0
+    - name: AnalysisTaskAgainSendToParserJob
+      group: PARSER
+      description: Отправляет задачи на повторный анализ в парсер
+      jobClass: ru.tilipod.quartz.job.AnalysisTaskAgainSendToParserJob
+      jobDataMap:
+        - pageSize: 20
+      triggers:
+        - name: AnalysisTaskAgainSendToParserJobCronTrigger
+          triggerType: CRON
+          cronExpression: "0 * * ? * *"
+          startTime:
+          priority: 1
+          startDelay: 0
+
 feign:
   client:
     config:

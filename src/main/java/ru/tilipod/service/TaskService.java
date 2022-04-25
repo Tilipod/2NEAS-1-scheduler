@@ -5,6 +5,7 @@ import ru.tilipod.controller.dto.TrainingResponseDto;
 import ru.tilipod.jpa.entity.Task;
 import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface TaskService {
@@ -17,7 +18,13 @@ public interface TaskService {
 
     Task findByProcessId(UUID processId);
 
-    Task changeStatus(Task task, TaskStatusEnum newStatus);
+    Task findById(Integer taskId);
+
+    List<Task> findAllByStatus(TaskStatusEnum status);
+
+    int prepareAndSendToParser(Task task);
+
+    Task changeStatus(Task task, TaskStatusEnum newStatus, String comment);
 
     boolean stopTask(UUID taskId);
 

@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
+import ru.tilipod.controller.dto.parser.NeuronNetworkDto;
 import ru.tilipod.event.TaskStatusChangeEvent;
 import ru.tilipod.exception.EntityNotFoundException;
 import ru.tilipod.exception.InvalidDataException;
 import ru.tilipod.exception.SystemError;
+import ru.tilipod.feign.api.ParserApi;
 import ru.tilipod.jpa.entity.NeuronNetwork;
 import ru.tilipod.jpa.entity.Task;
 import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
@@ -21,9 +23,12 @@ import ru.tilipod.service.CourceService;
 import ru.tilipod.service.DistributionService;
 import ru.tilipod.service.NeuronNetworkService;
 import ru.tilipod.service.TaskService;
+import ru.tilipod.util.Constants;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -42,6 +47,8 @@ public class TaskServiceImpl implements TaskService {
     private final NeuronNetworkService neuronNetworkService;
 
     private final CourceService courceService;
+
+    private final ParserApi parserApi;
 
     @Override
     @Transactional(readOnly = true)
@@ -80,7 +87,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = new Task();
 
         try {
-            task.setJsonNetworkStructure(objectMapper.writeValueAsString(request));
+            task.setJsonNetworkStructure(objectMapper.writeValueAsString(request.getNeuronNetworkStructure()));
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
             throw new InvalidDataException("Ошибка в данных запроса.", request);
@@ -99,10 +106,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public Task changeStatus(Task task, TaskStatusEnum newStatus) {
+    public Task changeStatus(Task task, TaskStatusEnum newStatus, String comment) {
         log.info("Изменение статуса задачи {} с {} на {}", task.getId(), task.getStatus(), newStatus);
 
         task.setStatus(newStatus);
+        task.setComment(comment);
+        task.setLastUpdatedDateTime(ZonedDateTime.now(Constants.EUROPE_MOSCOW_ZONE));
         task = taskRepository.save(task);
 
         eventPublisher.publishEvent(new TaskStatusChangeEvent(this, task, newStatus));
@@ -119,12 +128,50 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Task findById(Integer taskId) {
+        return taskRepository.findById(taskId)
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Task> findAllByStatus(TaskStatusEnum status) {
+        return taskRepository.findAllByStatus(status);
+    }
+
+    @Override
+    @Transactional
+    public int prepareAndSendToParser(Task task) {
+        NeuronNetwork net = neuronNetworkService.findByTaskId(task.getId());
+        NeuronNetworkDto request;
+
+        try {
+            request = objectMapper.readValue(task.getJsonNetworkStructure(), NeuronNetworkDto.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            log.error("Ошибка восстановления json-структуры нейросети по задаче {}", task.getId());
+            changeStatus(task, TaskStatusEnum.SYSTEM_ERROR, "Ошибка восстановления json-структуры нейросети");
+            return 0;
+        }
+
+        request.setTaskId(task.getId());
+        request.setPathToSave(net.getPathToModel());
+
+        parserApi.parseNeuronNetworkUsingPOST(request);
+
+        changeStatus(task, TaskStatusEnum.ANALYSIS, "Отправлена на анализ");
+
+        return 1;
+    }
+
+    @Override
     @Transactional
     public boolean stopTask(UUID processId) {
         Task task = findByProcessId(processId);
 
         try {
-            changeStatus(task, TaskStatusEnum.STOPPED);
+            changeStatus(task, TaskStatusEnum.STOPPED, "Остановлена клиентом");
         } catch (Exception e) {
             log.error("Неудачная остановка задачи {}. Причина: {}", task.getId(), e.getMessage());
             return false;
@@ -140,7 +187,7 @@ public class TaskServiceImpl implements TaskService {
         Task task = findByProcessId(processId);
 
         try {
-            changeStatus(task, TaskStatusEnum.ANALYZED);
+            changeStatus(task, TaskStatusEnum.ANALYZED, "Отправлена клиентом на повторный анализ");
         } catch (Exception e) {
             log.error("Неудачная редистрибьюция задачи {}. Причина: {}", task.getId(), e.getMessage());
             return false;
