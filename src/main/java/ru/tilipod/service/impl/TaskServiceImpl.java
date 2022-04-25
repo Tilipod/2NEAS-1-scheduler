@@ -9,12 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
+import ru.tilipod.controller.dto.distributor.CloudImagesDownloadRequest;
 import ru.tilipod.controller.dto.parser.NeuronNetworkDto;
 import ru.tilipod.event.TaskStatusChangeEvent;
 import ru.tilipod.exception.EntityNotFoundException;
 import ru.tilipod.exception.InvalidDataException;
 import ru.tilipod.exception.SystemError;
+import ru.tilipod.feign.api.DistributorApi;
 import ru.tilipod.feign.api.ParserApi;
+import ru.tilipod.jpa.entity.Distribution;
 import ru.tilipod.jpa.entity.NeuronNetwork;
 import ru.tilipod.jpa.entity.Task;
 import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
@@ -49,6 +52,8 @@ public class TaskServiceImpl implements TaskService {
     private final CourceService courceService;
 
     private final ParserApi parserApi;
+
+    private final DistributorApi distributorApi;
 
     @Override
     @Transactional(readOnly = true)
@@ -161,6 +166,25 @@ public class TaskServiceImpl implements TaskService {
         parserApi.parseNeuronNetworkUsingPOST(request);
 
         changeStatus(task, TaskStatusEnum.ANALYSIS, "Отправлена на анализ");
+
+        return 1;
+    }
+
+    @Override
+    @Transactional
+    public int prepareAndSendToDistributor(Task task) {
+        Distribution distribution = distributionService.findByTaskId(task.getId());
+        CloudImagesDownloadRequest request = new CloudImagesDownloadRequest();
+
+        request.setTaskId(task.getId());
+        request.setCloudType(distribution.getCloudType());
+        request.setPathFrom(distribution.getPathToRemoteDataset());
+        request.setPathTo(distribution.getPathToLocalDataset());
+        request.setToken(distribution.getCloudToken());
+
+        distributorApi.downloadImagesFromCloudUsingPOST(request);
+
+        changeStatus(task, TaskStatusEnum.DISTRIBUTING, "Отправлена на выгрузку датасетов");
 
         return 1;
     }

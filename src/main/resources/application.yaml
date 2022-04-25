@@ -65,6 +65,32 @@ scheduler:
           startTime:
           priority: 1
           startDelay: 0
+    - name: AnalyzedTaskSendToDistributorJob
+      group: DISTRIBUTOR
+      description: Отправляет задачи на выгрузку датасетов в дистрибьютор
+      jobClass: ru.tilipod.quartz.job.AnalyzedTaskSendToDistributorJob
+      jobDataMap:
+        - pageSize: 20
+      triggers:
+        - name: AnalyzedTaskSendToDistributorJobCronTrigger
+          triggerType: CRON
+          cronExpression: "0 * * ? * *"
+          startTime:
+          priority: 1
+          startDelay: 0
+    - name: DistributingTaskAgainSendToDistributorJob
+      group: DISTRIBUTOR
+      description: Отправляет задачи на повторную выгрузку датасетов в дистрибьютор
+      jobClass: ru.tilipod.quartz.job.DistributingTaskAgainSendToDistributorJob
+      jobDataMap:
+        - pageSize: 20
+      triggers:
+        - name: DistributingTaskAgainSendToDistributorJobCronTrigger
+          triggerType: CRON
+          cronExpression: "0 * * ? * *"
+          startTime:
+          priority: 1
+          startDelay: 0
 
 feign:
   client:

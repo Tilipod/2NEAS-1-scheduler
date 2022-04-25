@@ -105,7 +105,11 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column type="varchar" name="path_to_dataset">
+            <column type="varchar" name="path_to_remote_dataset">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column type="varchar" name="path_to_local_dataset">
                 <constraints nullable="false" unique="true"/>
             </column>
 

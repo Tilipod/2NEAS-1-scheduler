@@ -42,7 +42,10 @@ public class Distribution {
     private TrainingDto.DatasetTypeEnum datasetType;
 
     @NotNull
-    private String pathToDataset;
+    private String pathToRemoteDataset;
+
+    @NotNull
+    private String pathToLocalDataset;
 
     @Enumerated(EnumType.STRING)
     @NotNull

@@ -36,7 +36,8 @@ public class DistributionServiceImpl implements DistributionService {
         distribution.setCloudToken(request.getCloudToken());
         distribution.setCloudType(request.getCloudType());
         distribution.setDatasetType(request.getDatasetType());
-        distribution.setPathToDataset(pathToDataset);
+        distribution.setPathToLocalDataset(pathToDataset);
+        distribution.setPathToRemoteDataset(request.getPathToDataset());
 
         distribution = distributionRepository.save(distribution);
 
