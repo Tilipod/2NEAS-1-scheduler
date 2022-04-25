@@ -32,14 +32,23 @@ import ru.tilipod.util.RoutingKeys;
 @EnableConfigurationProperties(RabbitProperties.class)
 public class AmqpConfig implements RabbitListenerConfigurer {
 
-    @Value("${queues.parserResult}")
-    private String parserResultQueueName;
+    @Value("${queues.parserResultSuccess}")
+    private String parserResultSuccessQueueName;
+
+    @Value("${queues.parserResultError}")
+    private String parserResultErrorQueueName;
 
     @Value("${queues.distributorResultSuccess}")
     private String distributorResultSuccessQueueName;
 
     @Value("${queues.distributorResultError}")
     private String distributorResultErrorQueueName;
+
+    @Value("${queues.teacherResultSuccess}")
+    private String teacherResultSuccessQueueName;
+
+    @Value("${queues.teacherResultError}")
+    private String teacherResultErrorQueueName;
 
     @Override
     public void configureRabbitListeners(RabbitListenerEndpointRegistrar registrar) {
@@ -92,18 +101,23 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public Exchange exchangeParser() {
-        return new DirectExchange(ExchangeNames.PARSER);
+    public Exchange exchangeSuccess() {
+        return new DirectExchange(ExchangeNames.SUCCESS);
     }
 
     @Bean
-    public Exchange exchangeDistributor() {
-        return new DirectExchange(ExchangeNames.DISTRIBUTOR);
+    public Exchange exchangeError() {
+        return new DirectExchange(ExchangeNames.ERROR);
     }
 
     @Bean
-    Queue parserResultQueue() {
-        return new Queue(parserResultQueueName);
+    Queue parserResultSuccessQueue() {
+        return new Queue(parserResultSuccessQueueName);
+    }
+
+    @Bean
+    Queue parserResultErrorQueue() {
+        return new Queue(parserResultErrorQueueName);
     }
 
     @Bean
@@ -117,9 +131,27 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     }
 
     @Bean
-    public Binding parserResultQueueToExchangeParserBinding() {
-        return BindingBuilder.bind(parserResultQueue())
-                .to(exchangeParser())
+    Queue teacherResultSuccessQueue() {
+        return new Queue(teacherResultSuccessQueueName);
+    }
+
+    @Bean
+    Queue teacherResultErrorQueue() {
+        return new Queue(teacherResultErrorQueueName);
+    }
+
+    @Bean
+    public Binding parserResultSuccessQueueToExchangeSuccessBinding() {
+        return BindingBuilder.bind(parserResultSuccessQueue())
+                .to(exchangeSuccess())
+                .with(RoutingKeys.PARSER_RESULT_KEY)
+                .noargs();
+    }
+
+    @Bean
+    public Binding parserResultErrorQueueToExchangeErrorBinding() {
+        return BindingBuilder.bind(parserResultErrorQueue())
+                .to(exchangeError())
                 .with(RoutingKeys.PARSER_RESULT_KEY)
                 .noargs();
     }
@@ -127,16 +159,32 @@ public class AmqpConfig implements RabbitListenerConfigurer {
     @Bean
     public Binding distributorResultSuccessQueueToExchangeDistributorBinding() {
         return BindingBuilder.bind(distributorResultSuccessQueue())
-                .to(exchangeDistributor())
-                .with(RoutingKeys.DISTRIBUTOR_RESULT_SUCCESS_KEY)
+                .to(exchangeSuccess())
+                .with(RoutingKeys.DISTRIBUTOR_RESULT_KEY)
                 .noargs();
     }
 
     @Bean
     public Binding distributorResultErrorQueueToExchangeDistributorBinding() {
         return BindingBuilder.bind(distributorResultErrorQueue())
-                .to(exchangeDistributor())
-                .with(RoutingKeys.DISTRIBUTOR_RESULT_ERROR_KEY)
+                .to(exchangeError())
+                .with(RoutingKeys.DISTRIBUTOR_RESULT_KEY)
+                .noargs();
+    }
+
+    @Bean
+    public Binding teacherResultSuccessQueueToExchangeSuccessBinding() {
+        return BindingBuilder.bind(teacherResultSuccessQueue())
+                .to(exchangeSuccess())
+                .with(RoutingKeys.TEACHER_RESULT_KEY)
+                .noargs();
+    }
+
+    @Bean
+    public Binding teacherResultErrorQueueToExchangeErrorBinding() {
+        return BindingBuilder.bind(teacherResultErrorQueue())
+                .to(exchangeError())
+                .with(RoutingKeys.TEACHER_RESULT_KEY)
                 .noargs();
     }
 

@@ -33,14 +33,11 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer epochNumber = 0;
-
-    private Integer prototypeNumber = 0;
+    @NotNull
+    private Integer currentEpoch = 0;
 
     @NotNull
-    private Integer numberPrototypes;
-
-    private Integer batchSize = 10;
+    private Integer countEpoch;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "neuron_network_id")

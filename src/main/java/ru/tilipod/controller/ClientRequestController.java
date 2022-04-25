@@ -3,8 +3,6 @@ package ru.tilipod.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,14 +38,19 @@ public class ClientRequestController {
 
     @GetMapping("/{taskId}/result")
     @ApiOperation(value = "Получить результат задачи по обучению нейронной сети")
-    // todo Доработать в самом конце
-    public ResponseEntity<TrainingResponseDto> getTaskTrainingResult(@PathVariable UUID taskId) {
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
+    public TrainingResponseDto getTaskTrainingResult(@PathVariable UUID taskId) {
+        return taskService.getTaskTrainingResult(taskId);
     }
 
     @PostMapping("/{taskId}/stop")
     @ApiOperation(value = "Остановить задачу по обучению нейронной сети")
     public Boolean stopTraining(@PathVariable UUID taskId) {
-        return true;
+        return taskService.stopTask(taskId);
+    }
+
+    @PostMapping("/{taskId}/redistribute")
+    @ApiOperation(value = "Откатить задачу и повторно выгрузить датасеты")
+    public Boolean redistribute(@PathVariable UUID taskId) {
+        return taskService.redistribute(taskId);
     }
 }

@@ -1,0 +1,95 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Дистрибьютор, отвечающий за поставку датасетов для нейронных сетей",
+    "version": "0.0.1",
+    "title": "2NEAS-1-distributor"
+  },
+  "host": "localhost:50004",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "dataset-controller",
+      "description": "Контроллер для загрузки датасетов"
+    }
+  ],
+  "paths": {
+    "/dataset/cloud/images/download": {
+      "post": {
+        "tags": [
+          "dataset-controller"
+        ],
+        "summary": "Выгрузить изображения с облака на диск",
+        "operationId": "downloadImagesFromCloudUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "request",
+            "description": "request",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CloudImagesDownloadRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "definitions": {
+    "CloudImagesDownloadRequest": {
+      "type": "object",
+      "properties": {
+        "cloudType": {
+          "type": "string",
+          "description": "Тип облака",
+          "enum": [
+            "YANDEX"
+          ]
+        },
+        "pathFrom": {
+          "type": "string",
+          "description": "Путь к корневой папке в облаке"
+        },
+        "pathTo": {
+          "type": "string",
+          "description": "Путь к корневой папке на диске"
+        },
+        "taskId": {
+          "type": "integer",
+          "format": "int32",
+          "description": "ID задачи"
+        },
+        "token": {
+          "type": "string",
+          "description": "Токен для авторизации в облаке"
+        }
+      },
+      "title": "CloudImagesDownloadRequest",
+      "description": "Запрос на выгрузку изображений из облака на диск"
+    }
+  }
+}

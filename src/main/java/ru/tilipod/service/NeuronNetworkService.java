@@ -1,10 +1,17 @@
 package ru.tilipod.service;
 
+import ru.tilipod.controller.dto.TrainingRequestDto;
+import ru.tilipod.jpa.entity.NeuronNetwork;
 import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.entity.enums.NeuronNetworkType;
+
+import java.util.UUID;
 
 public interface NeuronNetworkService {
 
-    void createNewNetwork(Task task, NeuronNetworkType type);
+    NeuronNetwork createNetworkFromClientRequest(TrainingRequestDto request, Task task);
+
+    NeuronNetwork findByTaskId(Integer taskId);
+
+    NeuronNetwork findByTaskProcessId(UUID processId);
 
 }

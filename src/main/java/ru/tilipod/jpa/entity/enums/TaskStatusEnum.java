@@ -4,6 +4,8 @@ public enum TaskStatusEnum {
     CREATED, // Создана
     ANALYSIS, // В анализе (парсинг)
     ANALYZED, // Анализ закончен
+    DISTRIBUTING, // В процессе выгрузки датасетов
+    DISTRIBUTED, // Выгрузка датасетов закончена
     TRAINING, // В обучении
     TRAINED, // Обучена
     CONFIRMED, // Подтверждена клиентом

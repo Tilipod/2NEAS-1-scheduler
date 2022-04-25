@@ -38,13 +38,13 @@ public class Task {
     private UUID processId;
 
     @NotNull
-    private String jsonClient;
-
-    private Boolean withMentoring = false;
+    private String jsonNetworkStructure;
 
     @Enumerated(EnumType.STRING)
     @NotNull
     private TaskStatusEnum status;
+
+    private String comment;
 
     @CreatedDate
     private ZonedDateTime createdDateTime;

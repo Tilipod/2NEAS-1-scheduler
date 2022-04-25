@@ -4,12 +4,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import ru.tilipod.controller.dto.distributor.CloudImagesDownloadRequest;
+import ru.tilipod.controller.dto.teacher.TrainingDto;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,30 +19,36 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.time.ZonedDateTime;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Setter
 @Getter
 @EqualsAndHashCode
 @ToString
-@Table(name = "supervision")
+@Table(name = "distribution")
 @EntityListeners(AuditingEntityListener.class)
-public class Supervision {
+public class Distribution {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Double harmony = 0.0;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private TrainingDto.DatasetTypeEnum datasetType;
+
+    @NotNull
+    private String pathToDataset;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private CloudImagesDownloadRequest.CloudTypeEnum cloudType;
+
+    @NotNull
+    private String cloudToken;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "course_id")
-    private Course course;
-
-    @CreatedDate
-    private ZonedDateTime createdDateTime;
-
-    @LastModifiedDate
-    private ZonedDateTime lastUpdatedDateTime;
+    @JoinColumn(name = "task_id")
+    private Task task;
 }

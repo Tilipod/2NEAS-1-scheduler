@@ -34,7 +34,24 @@ eureka:
     serviceUrl:
       defaultZone: ${EUREKA_URI:http://localhost:50001/eureka/}
 
+feign:
+  client:
+    config:
+      parser:
+        name: parser
+      distributor:
+        name: distributor
+      teacher:
+        name: teacher
+
+commonPathToDataset: ${COMMON_PATH_TO_DATASET:C:/2NEAS-1/datasets/}
+pathPattern: ${PATH_PATTERN:task-%d-%s}
+commonPathToModel: ${COMMON_PATH_TO_MODEL:C:/2NEAS-1/models/}
+
 queues:
-  parserResult: "parserResult"
+  parserResultSuccess: "parserResultSuccess"
+  parserResultError: "parserResultError"
   distributorResultSuccess: "distributorResultSuccess"
   distributorResultError: "distributorResultError"
+  teacherResultSuccess: "teacherResultSuccess"
+  teacherResultError: "teacherResultError"

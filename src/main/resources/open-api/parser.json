@@ -1,0 +1,313 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Парсер, отвечающий за воспроизводство структуры нейронной сети по запросу клиента",
+    "version": "0.0.1",
+    "title": "2NEAS-1-parser"
+  },
+  "host": "localhost:50006",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "parsing-controller",
+      "description": "Контроллер для парсинга нейронных сетей"
+    }
+  ],
+  "paths": {
+    "/parsing/parsing": {
+      "post": {
+        "tags": [
+          "parsing-controller"
+        ],
+        "summary": "Воспроизвести структуру нейронной сети по запросу клиента",
+        "operationId": "parseNeuronNetworkUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "neuronNetworkDto",
+            "description": "neuronNetworkDto",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NeuronNetworkDto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "definitions": {
+    "InputTypeDto": {
+      "type": "object",
+      "required": [
+        "inputType"
+      ],
+      "properties": {
+        "channels": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Кол-во каналов (для СНС)"
+        },
+        "height": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Высота изображения (для СНС)"
+        },
+        "inputType": {
+          "type": "string",
+          "description": "Тип входных данных",
+          "enum": [
+            "CONVOLUTIONAL"
+          ]
+        },
+        "weight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Ширина изображения (для СНС)"
+        }
+      },
+      "title": "InputTypeDto"
+    },
+    "LayerDto": {
+      "type": "object",
+      "required": [
+        "countOutput",
+        "layerNumber",
+        "layerType"
+      ],
+      "properties": {
+        "activationType": {
+          "type": "string",
+          "description": "Функция активации для нейронов слоя",
+          "enum": [
+            "CUBE",
+            "ELU",
+            "HARDSIGMOID",
+            "HARDTANH",
+            "IDENTITY",
+            "LEAKYRELU",
+            "RATIONALTANH",
+            "RELU",
+            "RRELU",
+            "SIGMOID",
+            "SOFTMAX",
+            "SOFTPLUS",
+            "SOFTSIGN",
+            "TANH",
+            "RECTIFIEDTANH",
+            "SELU"
+          ]
+        },
+        "countInput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Кол-во входов"
+        },
+        "countOutput": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Кол-во выходов"
+        },
+        "layerNumber": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Номер слоя"
+        },
+        "layerType": {
+          "type": "string",
+          "description": "Тип слоя",
+          "enum": [
+            "CONVOLUTIONAL",
+            "BATCH_NORMALIZATION",
+            "DENSE",
+            "OUTPUT"
+          ]
+        },
+        "strideHeight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Высота фильтра (только для сверточного слоя)"
+        },
+        "strideWeight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Ширина фильтра (только для сверточного слоя)"
+        },
+        "weightInitType": {
+          "type": "string",
+          "description": "Способ инициализации весов нейронов слоя",
+          "enum": [
+            "DISTRIBUTION",
+            "ZERO",
+            "SIGMOID_UNIFORM",
+            "UNIFORM",
+            "XAVIER",
+            "XAVIER_UNIFORM",
+            "XAVIER_FAN_IN",
+            "XAVIER_LEGACY",
+            "RELU",
+            "RELU_UNIFORM"
+          ]
+        }
+      },
+      "title": "LayerDto"
+    },
+    "NeuronNetworkDto": {
+      "type": "object",
+      "required": [
+        "pathToSave",
+        "taskId"
+      ],
+      "properties": {
+        "backprop": {
+          "type": "boolean",
+          "description": "Использовать обратное распространение ошибки"
+        },
+        "inputType": {
+          "description": "Настройки входных данных",
+          "$ref": "#/definitions/InputTypeDto"
+        },
+        "iterations": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Кол-во итераций на каждой эпохе обучения"
+        },
+        "layers": {
+          "type": "array",
+          "description": "Настройки слоев сети",
+          "items": {
+            "$ref": "#/definitions/LayerDto"
+          }
+        },
+        "learningRate": {
+          "type": "number",
+          "format": "double",
+          "description": "Скорость обучения"
+        },
+        "optimizationAlgo": {
+          "type": "string",
+          "description": "Алгоритм обучения",
+          "enum": [
+            "LINE_GRADIENT_DESCENT",
+            "CONJUGATE_GRADIENT",
+            "HESSIAN_FREE",
+            "LBFGS",
+            "STOCHASTIC_GRADIENT_DESCENT"
+          ]
+        },
+        "pathToSave": {
+          "type": "string",
+          "description": "Путь к файлу сохранения модели сети"
+        },
+        "pretrain": {
+          "type": "boolean",
+          "description": "Признак предварительного обучения"
+        },
+        "regularization": {
+          "description": "Настройки регуляризации",
+          "$ref": "#/definitions/RegularizationDto"
+        },
+        "seed": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Число-инициализатор для генератора случайных чисел"
+        },
+        "taskId": {
+          "type": "integer",
+          "format": "int32",
+          "description": "ID задачи"
+        },
+        "updater": {
+          "description": "Настройки оптимизации скорости обучения",
+          "$ref": "#/definitions/UpdaterDto"
+        },
+        "weightInit": {
+          "type": "string",
+          "description": "Правило инициализации весов",
+          "enum": [
+            "DISTRIBUTION",
+            "ZERO",
+            "SIGMOID_UNIFORM",
+            "UNIFORM",
+            "XAVIER",
+            "XAVIER_UNIFORM",
+            "XAVIER_FAN_IN",
+            "XAVIER_LEGACY",
+            "RELU",
+            "RELU_UNIFORM"
+          ]
+        }
+      },
+      "title": "NeuronNetworkDto"
+    },
+    "RegularizationDto": {
+      "type": "object",
+      "properties": {
+        "needRegularization": {
+          "type": "boolean",
+          "description": "Требуется ли проводить регуляризацию"
+        },
+        "regularizationBias": {
+          "type": "number",
+          "format": "double",
+          "description": "Смещение при регуляризации"
+        },
+        "regularizationFactor": {
+          "type": "number",
+          "format": "double",
+          "description": "Коэффициент регуляризации"
+        },
+        "regularizationType": {
+          "type": "string",
+          "description": "Тип регуляризации",
+          "enum": [
+            "L1",
+            "L2"
+          ]
+        }
+      },
+      "title": "RegularizationDto"
+    },
+    "UpdaterDto": {
+      "type": "object",
+      "properties": {
+        "updaterFactor": {
+          "type": "number",
+          "format": "double",
+          "description": "Коэффициент оптимизации скорости обучения"
+        },
+        "updaterType": {
+          "type": "string",
+          "description": "Тип оптимизации скорости обучения",
+          "enum": [
+            "NESTEROVS"
+          ]
+        }
+      },
+      "title": "UpdaterDto"
+    }
+  }
+}

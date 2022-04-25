@@ -16,7 +16,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErrorResult> handleInvalidBillDataForXmlException(EntityNotFoundException ex) {
+    public ResponseEntity<ErrorResult> handleEntityNotFoundException(EntityNotFoundException ex) {
         String message = ex.getMessage().concat(String.format(" Класс: %s", ex.getEntityClass().getSimpleName()));
         log.debug(message);
 
@@ -29,7 +29,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(InvalidDataException.class)
-    public ResponseEntity<ErrorResult> handleInvalidBillDataForXmlException(InvalidDataException ex) {
+    public ResponseEntity<ErrorResult> handleInvalidDataException(InvalidDataException ex) {
         String message = ex.getMessage().concat(String.format(" Класс: %s", ex.getObject().getClass().getSimpleName()));
         log.debug(message);
 
