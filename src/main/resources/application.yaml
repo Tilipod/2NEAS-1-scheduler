@@ -91,6 +91,32 @@ scheduler:
           startTime:
           priority: 1
           startDelay: 0
+    - name: DistributedTaskSendToTeacherJob
+      group: TEACHER
+      description: Отправляет задачи на обучение в тичер
+      jobClass: ru.tilipod.quartz.job.DistributedTaskSendToTeacherJob
+      jobDataMap:
+        - pageSize: 20
+      triggers:
+        - name: DistributedTaskSendToTeacherJobCronTrigger
+          triggerType: CRON
+          cronExpression: "0 * * ? * *"
+          startTime:
+          priority: 1
+          startDelay: 0
+    - name: TrainingTaskAgainSendToTeacherJob
+      group: TEACHER
+      description: Отправляет задачи на обучение в тичер
+      jobClass: ru.tilipod.quartz.job.TrainingTaskAgainSendToTeacherJob
+      jobDataMap:
+        - pageSize: 20
+      triggers:
+        - name: TrainingTaskAgainSendToTeacherJobCronTrigger
+          triggerType: CRON
+          cronExpression: "0 * * ? * *"
+          startTime:
+          priority: 1
+          startDelay: 0
 
 feign:
   client:

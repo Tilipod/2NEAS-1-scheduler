@@ -11,12 +11,15 @@ import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
 import ru.tilipod.controller.dto.distributor.CloudImagesDownloadRequest;
 import ru.tilipod.controller.dto.parser.NeuronNetworkDto;
+import ru.tilipod.controller.dto.teacher.TrainingDto;
 import ru.tilipod.event.TaskStatusChangeEvent;
 import ru.tilipod.exception.EntityNotFoundException;
 import ru.tilipod.exception.InvalidDataException;
 import ru.tilipod.exception.SystemError;
 import ru.tilipod.feign.api.DistributorApi;
 import ru.tilipod.feign.api.ParserApi;
+import ru.tilipod.feign.api.TeacherApi;
+import ru.tilipod.jpa.entity.Course;
 import ru.tilipod.jpa.entity.Distribution;
 import ru.tilipod.jpa.entity.NeuronNetwork;
 import ru.tilipod.jpa.entity.Task;
@@ -55,6 +58,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final DistributorApi distributorApi;
 
+    private final TeacherApi teacherApi;
+
     @Override
     @Transactional(readOnly = true)
     public TaskStatusEnum getTaskStatusByProcessId(UUID processId) {
@@ -64,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public TrainingResponseDto getTaskTrainingResult(UUID processId) {
         Task task = findByProcessId(processId);
         NeuronNetwork net = neuronNetworkService.findByTaskProcessId(processId);
@@ -81,6 +86,10 @@ public class TaskServiceImpl implements TaskService {
                 log.error("Ошибка чтения обученной модели по задаче {}. Ошибка: {}", task.getId(), e.getMessage());
                 throw new SystemError("Ошибка чтения обученной модели. Пожалуйста, обратитесь к разработчику");
             }
+        }
+
+        if (TaskStatusEnum.TRAINED.equals(response.getStatus())) {
+            changeStatus(task, TaskStatusEnum.CONFIRMED, "Выгружена клиентом");
         }
 
         return response;
@@ -185,6 +194,27 @@ public class TaskServiceImpl implements TaskService {
         distributorApi.downloadImagesFromCloudUsingPOST(request);
 
         changeStatus(task, TaskStatusEnum.DISTRIBUTING, "Отправлена на выгрузку датасетов");
+
+        return 1;
+    }
+
+    @Override
+    @Transactional
+    public int prepareAndSendToTeacher(Task task) {
+        TrainingDto request = new TrainingDto();
+        NeuronNetwork net = neuronNetworkService.findByTaskId(task.getId());
+        Distribution distribution = distributionService.findByTaskId(task.getId());
+
+        request.setTaskId(task.getId());
+        request.setCountEpoch(1);
+        request.setCountOutput(net.getCountOutputs());
+        request.setDatasetType(distribution.getDatasetType());
+        request.setPathToDataset(distribution.getPathToLocalDataset());
+        request.setPathToModel(net.getPathToModel());
+
+        teacherApi.stepTrainingUsingPOST(request);
+
+        changeStatus(task, TaskStatusEnum.TRAINING, "Отправлена на обучение");
 
         return 1;
     }

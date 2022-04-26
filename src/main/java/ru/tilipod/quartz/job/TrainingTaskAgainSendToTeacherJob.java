@@ -19,23 +19,23 @@ import java.util.List;
 @Slf4j
 @PersistJobDataAfterExecution
 @DisallowConcurrentExecution
-public class DistributingTaskAgainSendToDistributorJob implements Job {
+public class TrainingTaskAgainSendToTeacherJob implements Job {
 
     @Autowired
     private TaskService taskService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-       List<Task> tasks = taskService.findAllByStatus(TaskStatusEnum.DISTRIBUTING);
+       List<Task> tasks = taskService.findAllByStatus(TaskStatusEnum.TRAINING);
 
-       // Каждые 2 часа повторно запускаем задачи на выгрузку датасетов. Вдруг упали
+       // Каждый час повторно запускаем задачи в парсинг. Вдруг упали
        int count = tasks.stream()
                .filter(t -> ChronoUnit.HOURS.between(t.getLastUpdatedDateTime().withZoneSameInstant(Constants.EUROPE_MOSCOW_ZONE),
-                       ZonedDateTime.now(Constants.EUROPE_MOSCOW_ZONE)) >= 2)
-               .map(taskService::prepareAndSendToDistributor)
+                       ZonedDateTime.now(Constants.EUROPE_MOSCOW_ZONE)) >= 1)
+               .map(taskService::prepareAndSendToTeacher)
                .reduce(0, Integer::sum);
 
-       log.info("Отправлено {} задач на повторную выгрузку датасетов", count);
+       log.info("Отправлено {} задач на повторное обучение", count);
     }
 
 }

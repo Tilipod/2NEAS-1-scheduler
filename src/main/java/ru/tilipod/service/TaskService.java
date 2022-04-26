@@ -26,6 +26,8 @@ public interface TaskService {
 
     int prepareAndSendToDistributor(Task task);
 
+    int prepareAndSendToTeacher(Task task);
+
     Task changeStatus(Task task, TaskStatusEnum newStatus, String comment);
 
     boolean stopTask(UUID taskId);
