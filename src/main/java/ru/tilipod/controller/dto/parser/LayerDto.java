@@ -289,8 +289,7 @@ public class LayerDto   {
    * Кол-во выходов
    * @return countOutput
   */
-  @ApiModelProperty(required = true, value = "Кол-во выходов")
-  @NotNull
+  @ApiModelProperty(value = "Кол-во выходов")
 
 
   public Integer getCountOutput() {
