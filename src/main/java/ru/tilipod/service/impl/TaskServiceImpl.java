@@ -19,7 +19,6 @@ import ru.tilipod.exception.SystemError;
 import ru.tilipod.feign.api.DistributorApi;
 import ru.tilipod.feign.api.ParserApi;
 import ru.tilipod.feign.api.TeacherApi;
-import ru.tilipod.jpa.entity.Course;
 import ru.tilipod.jpa.entity.Distribution;
 import ru.tilipod.jpa.entity.NeuronNetwork;
 import ru.tilipod.jpa.entity.Task;
@@ -62,37 +61,33 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public TaskStatusEnum getTaskStatusByProcessId(UUID processId) {
-        return taskRepository.findByProcessId(processId)
-                .map(Task::getStatus)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Сущность с ID = %s не найдена.",processId), Task.class));
-    }
-
-    @Override
-    @Transactional
-    public TrainingResponseDto getTaskTrainingResult(UUID processId) {
-        Task task = findByProcessId(processId);
-        NeuronNetwork net = neuronNetworkService.findByTaskProcessId(processId);
+    public TrainingResponseDto getTaskStatusByProcessId(UUID processId) {
         TrainingResponseDto response = new TrainingResponseDto();
+        Task task = taskRepository.findByProcessId(processId)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Сущность с ID = %s не найдена.",processId), Task.class));
 
         response.setStatus(task.getStatus());
         response.setComment(task.getComment());
 
-        if (TaskStatusEnum.TRAINED.equals(response.getStatus())
-            || TaskStatusEnum.CONFIRMED.equals(response.getStatus())) {
-            try (InputStream in = new FileInputStream(net.getPathToModel())) {
-                response.setModel(in.readAllBytes());
-            } catch (Exception e) {
-                log.error("Ошибка чтения обученной модели по задаче {}. Ошибка: {}", task.getId(), e.getMessage());
-                throw new SystemError("Ошибка чтения обученной модели. Пожалуйста, обратитесь к разработчику");
-            }
-        }
+        return response;
+    }
 
-        if (TaskStatusEnum.TRAINED.equals(response.getStatus())) {
+    @Override
+    @Transactional
+    public byte[] getTaskTrainingResult(UUID processId) {
+        Task task = findByProcessId(processId);
+        NeuronNetwork net = neuronNetworkService.findByTaskProcessId(processId);
+
+        if (TaskStatusEnum.TRAINED.equals(task.getStatus())) {
             changeStatus(task, TaskStatusEnum.CONFIRMED, "Выгружена клиентом");
         }
 
-        return response;
+        try (InputStream in = new FileInputStream(net.getPathToModel())) {
+            return in.readAllBytes();
+        } catch (Exception e) {
+            log.error("Ошибка чтения обученной модели по задаче {}. Ошибка: {}", task.getId(), e.getMessage());
+            throw new SystemError("Ошибка чтения обученной модели. Пожалуйста, обратитесь к разработчику");
+        }
     }
 
     @Override

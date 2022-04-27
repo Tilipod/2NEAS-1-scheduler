@@ -3,6 +3,7 @@ package ru.tilipod.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import ru.tilipod.controller.dto.TrainingResponseDto;
 import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
 import ru.tilipod.service.TaskService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @RestController
@@ -32,14 +34,14 @@ public class ClientRequestController {
 
     @GetMapping("/{taskId}")
     @ApiOperation(value = "Получить статус задачи по обучению нейронной сети")
-    public TaskStatusEnum getTaskStatus(@PathVariable UUID taskId) {
+    public TrainingResponseDto getTaskStatus(@PathVariable UUID taskId) {
         return taskService.getTaskStatusByProcessId(taskId);
     }
 
     @GetMapping("/{taskId}/result")
     @ApiOperation(value = "Получить результат задачи по обучению нейронной сети")
-    public TrainingResponseDto getTaskTrainingResult(@PathVariable UUID taskId) {
-        return taskService.getTaskTrainingResult(taskId);
+    public ResponseEntity<byte[]> getTaskTrainingResult(@PathVariable UUID taskId) {
+        return ResponseEntity.ok(taskService.getTaskTrainingResult(taskId));
     }
 
     @PostMapping("/{taskId}/stop")

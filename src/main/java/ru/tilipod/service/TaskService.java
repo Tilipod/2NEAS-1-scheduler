@@ -5,14 +5,15 @@ import ru.tilipod.controller.dto.TrainingResponseDto;
 import ru.tilipod.jpa.entity.Task;
 import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
 public interface TaskService {
 
-    TaskStatusEnum getTaskStatusByProcessId(UUID processId);
+    TrainingResponseDto getTaskStatusByProcessId(UUID processId);
 
-    TrainingResponseDto getTaskTrainingResult(UUID processId);
+    byte[] getTaskTrainingResult(UUID processId);
 
     UUID createNewTask(TrainingRequestDto request);
 

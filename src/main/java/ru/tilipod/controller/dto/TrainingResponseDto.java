@@ -9,9 +9,6 @@ import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
 @ApiModel(value = "TrainingResponse", description = "Обученная нейронная сеть")
 public class TrainingResponseDto {
 
-    @ApiModelProperty(value = "Модель обученной нейросети")
-    private byte[] model;
-
     @ApiModelProperty(value = "Текущий статус задачи на обучение")
     private TaskStatusEnum status;
 
