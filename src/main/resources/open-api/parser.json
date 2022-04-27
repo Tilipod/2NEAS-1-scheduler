@@ -131,6 +131,16 @@
           "format": "int32",
           "description": "Кол-во выходов"
         },
+        "kernelHeight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Высота фильтра"
+        },
+        "kernelWeight": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Ширина фильтра"
+        },
         "layerNumber": {
           "type": "integer",
           "format": "int32",
@@ -142,19 +152,31 @@
           "enum": [
             "CONVOLUTIONAL",
             "BATCH_NORMALIZATION",
+            "SUBSAMPLING",
             "DENSE",
             "OUTPUT"
+          ]
+        },
+        "poolingType": {
+          "type": "string",
+          "description": "Тип пулинга",
+          "enum": [
+            "MAX",
+            "AVG",
+            "SUM",
+            "PNORM",
+            "NONE"
           ]
         },
         "strideHeight": {
           "type": "integer",
           "format": "int32",
-          "description": "Высота фильтра (только для сверточного слоя)"
+          "description": "Высота шага"
         },
         "strideWeight": {
           "type": "integer",
           "format": "int32",
-          "description": "Ширина фильтра (только для сверточного слоя)"
+          "description": "Ширина шага"
         },
         "weightInitType": {
           "type": "string",

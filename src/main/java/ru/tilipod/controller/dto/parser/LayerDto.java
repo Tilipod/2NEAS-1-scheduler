@@ -83,6 +83,12 @@ public class LayerDto   {
   @JsonProperty("countOutput")
   private Integer countOutput;
 
+  @JsonProperty("kernelHeight")
+  private Integer kernelHeight;
+
+  @JsonProperty("kernelWeight")
+  private Integer kernelWeight;
+
   @JsonProperty("layerNumber")
   private Integer layerNumber;
 
@@ -93,6 +99,8 @@ public class LayerDto   {
     CONVOLUTIONAL("CONVOLUTIONAL"),
     
     BATCH_NORMALIZATION("BATCH_NORMALIZATION"),
+    
+    SUBSAMPLING("SUBSAMPLING"),
     
     DENSE("DENSE"),
     
@@ -127,6 +135,50 @@ public class LayerDto   {
 
   @JsonProperty("layerType")
   private LayerTypeEnum layerType;
+
+  /**
+   * Тип пулинга
+   */
+  public enum PoolingTypeEnum {
+    MAX("MAX"),
+    
+    AVG("AVG"),
+    
+    SUM("SUM"),
+    
+    PNORM("PNORM"),
+    
+    NONE("NONE");
+
+    private String value;
+
+    PoolingTypeEnum(String value) {
+      this.value = value;
+    }
+
+    @JsonValue
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static PoolingTypeEnum fromValue(String value) {
+      for (PoolingTypeEnum b : PoolingTypeEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
+  @JsonProperty("poolingType")
+  private PoolingTypeEnum poolingType;
 
   @JsonProperty("strideHeight")
   private Integer strideHeight;
@@ -249,6 +301,46 @@ public class LayerDto   {
     this.countOutput = countOutput;
   }
 
+  public LayerDto kernelHeight(Integer kernelHeight) {
+    this.kernelHeight = kernelHeight;
+    return this;
+  }
+
+  /**
+   * Высота фильтра
+   * @return kernelHeight
+  */
+  @ApiModelProperty(value = "Высота фильтра")
+
+
+  public Integer getKernelHeight() {
+    return kernelHeight;
+  }
+
+  public void setKernelHeight(Integer kernelHeight) {
+    this.kernelHeight = kernelHeight;
+  }
+
+  public LayerDto kernelWeight(Integer kernelWeight) {
+    this.kernelWeight = kernelWeight;
+    return this;
+  }
+
+  /**
+   * Ширина фильтра
+   * @return kernelWeight
+  */
+  @ApiModelProperty(value = "Ширина фильтра")
+
+
+  public Integer getKernelWeight() {
+    return kernelWeight;
+  }
+
+  public void setKernelWeight(Integer kernelWeight) {
+    this.kernelWeight = kernelWeight;
+  }
+
   public LayerDto layerNumber(Integer layerNumber) {
     this.layerNumber = layerNumber;
     return this;
@@ -291,16 +383,36 @@ public class LayerDto   {
     this.layerType = layerType;
   }
 
+  public LayerDto poolingType(PoolingTypeEnum poolingType) {
+    this.poolingType = poolingType;
+    return this;
+  }
+
+  /**
+   * Тип пулинга
+   * @return poolingType
+  */
+  @ApiModelProperty(value = "Тип пулинга")
+
+
+  public PoolingTypeEnum getPoolingType() {
+    return poolingType;
+  }
+
+  public void setPoolingType(PoolingTypeEnum poolingType) {
+    this.poolingType = poolingType;
+  }
+
   public LayerDto strideHeight(Integer strideHeight) {
     this.strideHeight = strideHeight;
     return this;
   }
 
   /**
-   * Высота фильтра (только для сверточного слоя)
+   * Высота шага
    * @return strideHeight
   */
-  @ApiModelProperty(value = "Высота фильтра (только для сверточного слоя)")
+  @ApiModelProperty(value = "Высота шага")
 
 
   public Integer getStrideHeight() {
@@ -317,10 +429,10 @@ public class LayerDto   {
   }
 
   /**
-   * Ширина фильтра (только для сверточного слоя)
+   * Ширина шага
    * @return strideWeight
   */
-  @ApiModelProperty(value = "Ширина фильтра (только для сверточного слоя)")
+  @ApiModelProperty(value = "Ширина шага")
 
 
   public Integer getStrideWeight() {
@@ -364,8 +476,11 @@ public class LayerDto   {
     return Objects.equals(this.activationType, layerDto.activationType) &&
         Objects.equals(this.countInput, layerDto.countInput) &&
         Objects.equals(this.countOutput, layerDto.countOutput) &&
+        Objects.equals(this.kernelHeight, layerDto.kernelHeight) &&
+        Objects.equals(this.kernelWeight, layerDto.kernelWeight) &&
         Objects.equals(this.layerNumber, layerDto.layerNumber) &&
         Objects.equals(this.layerType, layerDto.layerType) &&
+        Objects.equals(this.poolingType, layerDto.poolingType) &&
         Objects.equals(this.strideHeight, layerDto.strideHeight) &&
         Objects.equals(this.strideWeight, layerDto.strideWeight) &&
         Objects.equals(this.weightInitType, layerDto.weightInitType);
@@ -373,7 +488,7 @@ public class LayerDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(activationType, countInput, countOutput, layerNumber, layerType, strideHeight, strideWeight, weightInitType);
+    return Objects.hash(activationType, countInput, countOutput, kernelHeight, kernelWeight, layerNumber, layerType, poolingType, strideHeight, strideWeight, weightInitType);
   }
 
   @Override
@@ -384,8 +499,11 @@ public class LayerDto   {
     sb.append("    activationType: ").append(toIndentedString(activationType)).append("\n");
     sb.append("    countInput: ").append(toIndentedString(countInput)).append("\n");
     sb.append("    countOutput: ").append(toIndentedString(countOutput)).append("\n");
+    sb.append("    kernelHeight: ").append(toIndentedString(kernelHeight)).append("\n");
+    sb.append("    kernelWeight: ").append(toIndentedString(kernelWeight)).append("\n");
     sb.append("    layerNumber: ").append(toIndentedString(layerNumber)).append("\n");
     sb.append("    layerType: ").append(toIndentedString(layerType)).append("\n");
+    sb.append("    poolingType: ").append(toIndentedString(poolingType)).append("\n");
     sb.append("    strideHeight: ").append(toIndentedString(strideHeight)).append("\n");
     sb.append("    strideWeight: ").append(toIndentedString(strideWeight)).append("\n");
     sb.append("    weightInitType: ").append(toIndentedString(weightInitType)).append("\n");
