@@ -7,8 +7,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 import ru.tilipod.service.TaskService;
 import ru.tilipod.util.Constants;
 

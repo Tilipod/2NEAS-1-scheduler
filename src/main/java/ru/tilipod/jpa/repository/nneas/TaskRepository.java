@@ -1,9 +1,9 @@
-package ru.tilipod.jpa.repository;
+package ru.tilipod.jpa.repository.nneas;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 
 import java.util.List;
 import java.util.Optional;

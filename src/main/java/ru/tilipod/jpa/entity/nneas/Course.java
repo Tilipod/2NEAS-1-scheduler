@@ -1,7 +1,8 @@
-package ru.tilipod.jpa.entity;
+package ru.tilipod.jpa.entity.nneas;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
@@ -25,26 +26,24 @@ import java.time.ZonedDateTime;
 @Getter
 @EqualsAndHashCode
 @ToString
-@Table(name = "neuron_network")
+@NoArgsConstructor
+@Table(schema = "public", name = "course")
 @EntityListeners(AuditingEntityListener.class)
-public class NeuronNetwork {
+public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull
-    private String pathToModel;
+    private Integer currentEpoch = 0;
 
     @NotNull
-    private Integer countOutputs;
-
-    @NotNull
-    private Boolean withMentoring = false;
+    private Integer countEpoch;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "task_id")
-    private Task task;
+    @JoinColumn(name = "neuron_network_id")
+    private NeuronNetwork neuronNetwork;
 
     @CreatedDate
     private ZonedDateTime createdDateTime;

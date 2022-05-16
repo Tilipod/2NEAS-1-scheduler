@@ -1,4 +1,4 @@
-package ru.tilipod.jpa.entity.enums;
+package ru.tilipod.jpa.entity.nneas.enums;
 
 public enum TaskStatusEnum {
     CREATED, // Создана

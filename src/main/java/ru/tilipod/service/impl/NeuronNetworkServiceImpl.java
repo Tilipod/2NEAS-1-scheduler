@@ -8,9 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.parser.LayerDto;
 import ru.tilipod.exception.InvalidDataException;
-import ru.tilipod.jpa.entity.NeuronNetwork;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.repository.NeuronNetworkRepository;
+import ru.tilipod.jpa.entity.nneas.NeuronNetwork;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.repository.nneas.NeuronNetworkRepository;
 import ru.tilipod.service.NeuronNetworkService;
 
 import java.util.List;

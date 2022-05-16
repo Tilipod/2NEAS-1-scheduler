@@ -1,8 +1,8 @@
 package ru.tilipod.service;
 
 import ru.tilipod.controller.dto.TrainingRequestDto;
-import ru.tilipod.jpa.entity.Course;
-import ru.tilipod.jpa.entity.NeuronNetwork;
+import ru.tilipod.jpa.entity.nneas.Course;
+import ru.tilipod.jpa.entity.nneas.NeuronNetwork;
 
 import java.util.UUID;
 

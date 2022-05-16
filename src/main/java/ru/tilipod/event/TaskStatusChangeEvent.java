@@ -2,8 +2,8 @@ package ru.tilipod.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 
 @Getter
 public class TaskStatusChangeEvent extends ApplicationEvent {

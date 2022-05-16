@@ -1,15 +1,20 @@
-package ru.tilipod.jpa.entity;
+package ru.tilipod.jpa.entity.nneas;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import ru.tilipod.controller.dto.distributor.CloudImagesDownloadRequest;
+import ru.tilipod.controller.dto.teacher.TrainingDto;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,23 +30,35 @@ import java.time.ZonedDateTime;
 @Getter
 @EqualsAndHashCode
 @ToString
-@Table(name = "course")
+@NoArgsConstructor
+@Table(schema = "public", name = "distribution")
 @EntityListeners(AuditingEntityListener.class)
-public class Course {
+public class Distribution {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     @NotNull
-    private Integer currentEpoch = 0;
+    private TrainingDto.DatasetTypeEnum datasetType;
 
     @NotNull
-    private Integer countEpoch;
+    private String pathToRemoteDataset;
+
+    @NotNull
+    private String pathToLocalDataset;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private CloudImagesDownloadRequest.CloudTypeEnum cloudType;
+
+    @NotNull
+    private String cloudToken;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "neuron_network_id")
-    private NeuronNetwork neuronNetwork;
+    @JoinColumn(name = "task_id")
+    private Task task;
 
     @CreatedDate
     private ZonedDateTime createdDateTime;

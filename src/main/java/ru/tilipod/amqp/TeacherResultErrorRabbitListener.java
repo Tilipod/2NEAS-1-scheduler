@@ -6,8 +6,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tilipod.amqp.message.TeacherResultErrorMessage;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 import ru.tilipod.service.TaskService;
 
 @Slf4j

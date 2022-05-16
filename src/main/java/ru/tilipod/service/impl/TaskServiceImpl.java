@@ -19,15 +19,17 @@ import ru.tilipod.exception.SystemError;
 import ru.tilipod.feign.api.DistributorApi;
 import ru.tilipod.feign.api.ParserApi;
 import ru.tilipod.feign.api.TeacherApi;
-import ru.tilipod.jpa.entity.Distribution;
-import ru.tilipod.jpa.entity.NeuronNetwork;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
-import ru.tilipod.jpa.repository.TaskRepository;
+import ru.tilipod.jpa.entity.nneas.Distribution;
+import ru.tilipod.jpa.entity.nneas.NeuronNetwork;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
+import ru.tilipod.jpa.entity.security.User;
+import ru.tilipod.jpa.repository.nneas.TaskRepository;
 import ru.tilipod.service.CourceService;
 import ru.tilipod.service.DistributionService;
 import ru.tilipod.service.NeuronNetworkService;
 import ru.tilipod.service.TaskService;
+import ru.tilipod.service.UserService;
 import ru.tilipod.util.Constants;
 
 import java.io.FileInputStream;
@@ -44,6 +46,8 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
 
     private final ObjectMapper objectMapper;
+
+    private final UserService userService;
 
     private final ApplicationEventPublisher eventPublisher;
 
@@ -93,6 +97,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public UUID createNewTask(TrainingRequestDto request) {
+        User user = userService.findByUuid(request.getUserUuid())
+                .orElseThrow(() -> new EntityNotFoundException(String.format("User with uuid = %s not found", request.getUserUuid()), User.class));
         Task task = new Task();
 
         try {
@@ -103,8 +109,11 @@ public class TaskServiceImpl implements TaskService {
         }
         task.setStatus(TaskStatusEnum.CREATED);
         task.setProcessId(UUID.randomUUID());
+        task.setUser(user);
 
         task = taskRepository.save(task);
+
+        log.info("Created new task with process_id = {} for user with uuid = {}", task.getProcessId(), user.getUuid());
 
         distributionService.createNewFromClientRequest(request, task);
         NeuronNetwork net = neuronNetworkService.createNetworkFromClientRequest(request, task);

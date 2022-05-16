@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tilipod.controller.dto.TrainingRequestDto;
-import ru.tilipod.jpa.entity.Course;
-import ru.tilipod.jpa.entity.NeuronNetwork;
-import ru.tilipod.jpa.repository.CourseRepository;
+import ru.tilipod.jpa.entity.nneas.Course;
+import ru.tilipod.jpa.entity.nneas.NeuronNetwork;
+import ru.tilipod.jpa.repository.nneas.CourseRepository;
 import ru.tilipod.service.CourceService;
 
 import java.util.UUID;

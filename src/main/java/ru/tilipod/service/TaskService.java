@@ -2,10 +2,9 @@ package ru.tilipod.service;
 
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 

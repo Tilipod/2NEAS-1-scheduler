@@ -7,9 +7,14 @@ import ru.tilipod.controller.dto.distributor.CloudImagesDownloadRequest;
 import ru.tilipod.controller.dto.parser.NeuronNetworkDto;
 import ru.tilipod.controller.dto.teacher.TrainingDto;
 
+import java.util.UUID;
+
 @Data
 @ApiModel(value = "TrainingRequest", description = "Запрос на создание задачи по обучению нейронной сети")
 public class TrainingRequestDto {
+
+    @ApiModelProperty(value = "UUID пользователя")
+    private UUID userUuid;
 
     @ApiModelProperty(value = "Включить подкрепление к обучению")
     private Boolean withMentoring;

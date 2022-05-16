@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
-import ru.tilipod.jpa.entity.enums.TaskStatusEnum;
 import ru.tilipod.service.TaskService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @RestController

@@ -3,9 +3,99 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
+    <changeSet id="20220516-1000" author="tilipod">
+
+        <sql>
+            CREATE SCHEMA security;
+        </sql>
+
+        <createTable tableName="role" schemaName="security">
+
+            <column type="bigint" name="id" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column type="varchar" name="name">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+        </createTable>
+
+        <createTable tableName="user" schemaName="security">
+
+            <column type="bigint" name="id" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column type="uuid" name="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column type="varchar" name="username">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column type="varchar" name="email">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column type="varchar" name="password">
+                <constraints nullable="false"/>
+            </column>
+
+            <column type="varchar" name="vip_level">
+                <constraints nullable="false"/>
+            </column>
+
+            <column type="timestamptz" name="created_date_time">
+                <constraints nullable="false"/>
+            </column>
+
+            <column type="timestamptz" name="last_updated_date_time">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createTable tableName="user_role" schemaName="security">
+
+            <column type="bigint" name="id" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column type="bigint" name="user_id">
+                <constraints nullable="false" foreignKeyName="user_role_user_foreign_key"
+                             references="security.user(id)" deleteCascade="true"/>
+            </column>
+
+            <column type="bigint" name="role_id">
+                <constraints nullable="false" foreignKeyName="user_role_role_foreign_key"
+                             references="security.role(id)" deleteCascade="true"/>
+            </column>
+
+        </createTable>
+
+        <insert tableName="role" schemaName="security">
+            <column name="name" value="ROLE_ADMIN"/>
+        </insert>
+
+        <insert tableName="role" schemaName="security">
+            <column name="name" value="ROLE_CLIENT"/>
+        </insert>
+
+        <insert tableName="role" schemaName="security">
+            <column name="name" value="ROLE_SUPPORT"/>
+        </insert>
+
+        <insert tableName="role" schemaName="security">
+            <column name="name" value="ROLE_ANALYTIC"/>
+        </insert>
+
+    </changeSet>
+
     <changeSet id="20220401-1000" author="tilipod">
 
-        <createTable tableName="task">
+        <createTable tableName="task" schemaName="public">
 
             <column type="bigint" name="id" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -25,6 +115,11 @@
 
             <column type="varchar" name="comment"/>
 
+            <column type="bigint" name="user_id">
+                <constraints nullable="false" unique="true" foreignKeyName="task_user_foreign_key"
+                             references="security.user(id)" deleteCascade="true"/>
+            </column>
+
             <column type="timestamptz" name="created_date_time">
                 <constraints nullable="false"/>
             </column>
@@ -35,7 +130,7 @@
 
         </createTable>
 
-        <createTable tableName="neuron_network">
+        <createTable tableName="neuron_network" schemaName="public">
 
             <column type="bigint" name="id" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -66,7 +161,7 @@
 
         </createTable>
 
-        <createTable tableName="course">
+        <createTable tableName="course" schemaName="public">
 
             <column type="bigint" name="id" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -95,7 +190,7 @@
 
         </createTable>
 
-        <createTable tableName="distribution">
+        <createTable tableName="distribution" schemaName="public">
 
             <column type="bigint" name="id" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true"/>
@@ -137,7 +232,5 @@
         </createTable>
 
     </changeSet>
-
-
 
 </databaseChangeLog>

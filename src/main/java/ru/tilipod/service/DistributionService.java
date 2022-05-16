@@ -1,8 +1,8 @@
 package ru.tilipod.service;
 
 import ru.tilipod.controller.dto.TrainingRequestDto;
-import ru.tilipod.jpa.entity.Distribution;
-import ru.tilipod.jpa.entity.Task;
+import ru.tilipod.jpa.entity.nneas.Distribution;
+import ru.tilipod.jpa.entity.nneas.Task;
 
 import java.util.UUID;
 

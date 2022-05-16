@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tilipod.controller.dto.TrainingRequestDto;
-import ru.tilipod.jpa.entity.Distribution;
-import ru.tilipod.jpa.entity.Task;
-import ru.tilipod.jpa.repository.DistributionRepository;
+import ru.tilipod.jpa.entity.nneas.Distribution;
+import ru.tilipod.jpa.entity.nneas.Task;
+import ru.tilipod.jpa.repository.nneas.DistributionRepository;
 import ru.tilipod.service.DistributionService;
 
 import java.util.UUID;

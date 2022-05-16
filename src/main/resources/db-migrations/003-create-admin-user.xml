@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="20220516-1100" author="tilipod">
+
+        <insert tableName="user" schemaName="security">
+            <column name="uuid" value="5c2cc989-31a7-4718-9a86-35872c757946"/>
+            <column name="username" value="tilipod"/>
+            <column name="password" value="$2a$12$x1DKqk.Os9rEGsIw7.vYh.0XZhyuAsBptQJfdPHsKb3bHv3jI0dCS"/>
+            <column name="email" value="tilipod@mail.ru"/>
+            <column name="vip_level" value="PLATINUM"/>
+            <column name="created_date_time" value="now()"/>
+            <column name="last_updated_date_time" value="now()"/>
+        </insert>
+
+        <insert tableName="user_role" schemaName="security">
+            <column name="user_id" value="1"/>
+            <column name="role_id" value="1"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
