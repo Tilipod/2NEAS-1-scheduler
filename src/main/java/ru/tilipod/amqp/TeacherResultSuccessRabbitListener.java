@@ -10,6 +10,7 @@ import ru.tilipod.jpa.entity.nneas.Course;
 import ru.tilipod.jpa.entity.nneas.Task;
 import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 import ru.tilipod.service.CourceService;
+import ru.tilipod.service.PrecisionService;
 import ru.tilipod.service.TaskService;
 
 @Slf4j
@@ -20,6 +21,8 @@ public class TeacherResultSuccessRabbitListener {
     private final CourceService courceService;
 
     private final TaskService taskService;
+
+    private final PrecisionService precisionService;
 
     @RabbitListener(queues = "${queues.teacherResultSuccess}")
     @Transactional
@@ -45,6 +48,7 @@ public class TeacherResultSuccessRabbitListener {
         }
 
         course.setCurrentEpoch(course.getCurrentEpoch() + 1);
+        precisionService.addPrecisionForCourse(message.getPrecision(), course);
         if (course.getCurrentEpoch() >= course.getCountEpoch()) {
             taskService.changeStatus(task, TaskStatusEnum.TRAINED, "Полностью обучена");
         } else {

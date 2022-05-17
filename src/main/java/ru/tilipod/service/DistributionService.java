@@ -13,4 +13,6 @@ public interface DistributionService {
     Distribution findByTaskId(Integer taskId);
 
     Distribution findByTaskProcessId(UUID processId);
+
+    Distribution update(Distribution distribution);
 }

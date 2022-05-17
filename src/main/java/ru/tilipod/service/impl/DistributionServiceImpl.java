@@ -60,4 +60,9 @@ public class DistributionServiceImpl implements DistributionService {
         return distributionRepository.findByTask_ProcessId(processId)
                 .orElse(null);
     }
+
+    @Override
+    public Distribution update(Distribution distribution) {
+        return distributionRepository.save(distribution);
+    }
 }

@@ -70,6 +70,11 @@
             "YANDEX"
           ]
         },
+        "maxCounts": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Максимальное кол-во файлов для скачивания"
+        },
         "pathFrom": {
           "type": "string",
           "description": "Путь к корневой папке в облаке"
@@ -86,6 +91,11 @@
         "token": {
           "type": "string",
           "description": "Токен для авторизации в облаке"
+        },
+        "totalOffset": {
+          "type": "integer",
+          "format": "int64",
+          "description": "Общее кол-во уже выгруженных файлов"
         }
       },
       "title": "CloudImagesDownloadRequest",

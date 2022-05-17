@@ -6,8 +6,10 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tilipod.amqp.message.DistributeResultSuccessMessage;
+import ru.tilipod.jpa.entity.nneas.Distribution;
 import ru.tilipod.jpa.entity.nneas.Task;
 import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
+import ru.tilipod.service.DistributionService;
 import ru.tilipod.service.TaskService;
 
 @Slf4j
@@ -16,6 +18,8 @@ import ru.tilipod.service.TaskService;
 public class DistributorResultSuccessRabbitListener {
 
     private final TaskService taskService;
+
+    private final DistributionService distributionService;
 
     @RabbitListener(queues = "${queues.distributorResultSuccess}")
     @Transactional
@@ -33,7 +37,17 @@ public class DistributorResultSuccessRabbitListener {
             return;
         }
 
-        taskService.changeStatus(task, TaskStatusEnum.DISTRIBUTED, "Ожидает обучения");
+        if (message.getDownloadCount() == 0L) {
+            taskService.changeStatus(task, TaskStatusEnum.DISTRIBUTED, "Ожидает обучения");
+            return;
+        }
+
+        // Увеличиваем смещения для дальнейшего скачивания
+        Distribution distribution = distributionService.findByTaskId(message.getTaskId());
+        distribution.setTotal(distribution.getTotal() + message.getDownloadCount());
+        distributionService.update(distribution);
+
+        taskService.changeStatus(task, TaskStatusEnum.ANALYZED, "Датасеты частично выгружены");
     }
 
 }

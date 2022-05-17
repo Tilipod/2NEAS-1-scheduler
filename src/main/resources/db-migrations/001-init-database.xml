@@ -190,6 +190,31 @@
 
         </createTable>
 
+        <createTable tableName="precisions" schemaName="public">
+
+            <column type="bigint" name="id" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column type="numeric" name="precision">
+                <constraints nullable="false"/>
+            </column>
+
+            <column type="bigint" name="course_id">
+                <constraints nullable="false" unique="true" foreignKeyName="precision_course_foreign_key"
+                             references="course(id)" deleteCascade="true"/>
+            </column>
+
+            <column type="timestamptz" name="created_date_time">
+                <constraints nullable="false"/>
+            </column>
+
+            <column type="timestamptz" name="last_updated_date_time">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
         <createTable tableName="distribution" schemaName="public">
 
             <column type="bigint" name="id" autoIncrement="true">
@@ -206,6 +231,10 @@
 
             <column type="varchar" name="path_to_local_dataset">
                 <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column type="bigint" name="total">
+                <constraints nullable="false"/>
             </column>
 
             <column type="varchar" name="cloud_type">

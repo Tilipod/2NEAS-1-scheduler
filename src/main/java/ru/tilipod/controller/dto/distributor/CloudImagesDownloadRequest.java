@@ -48,6 +48,9 @@ public class CloudImagesDownloadRequest   {
   @JsonProperty("cloudType")
   private CloudTypeEnum cloudType;
 
+  @JsonProperty("maxCounts")
+  private Long maxCounts;
+
   @JsonProperty("pathFrom")
   private String pathFrom;
 
@@ -59,6 +62,9 @@ public class CloudImagesDownloadRequest   {
 
   @JsonProperty("token")
   private String token;
+
+  @JsonProperty("totalOffset")
+  private Long totalOffset;
 
   public CloudImagesDownloadRequest cloudType(CloudTypeEnum cloudType) {
     this.cloudType = cloudType;
@@ -78,6 +84,26 @@ public class CloudImagesDownloadRequest   {
 
   public void setCloudType(CloudTypeEnum cloudType) {
     this.cloudType = cloudType;
+  }
+
+  public CloudImagesDownloadRequest maxCounts(Long maxCounts) {
+    this.maxCounts = maxCounts;
+    return this;
+  }
+
+  /**
+   * Максимальное кол-во файлов для скачивания
+   * @return maxCounts
+  */
+  @ApiModelProperty(value = "Максимальное кол-во файлов для скачивания")
+
+
+  public Long getMaxCounts() {
+    return maxCounts;
+  }
+
+  public void setMaxCounts(Long maxCounts) {
+    this.maxCounts = maxCounts;
   }
 
   public CloudImagesDownloadRequest pathFrom(String pathFrom) {
@@ -160,6 +186,26 @@ public class CloudImagesDownloadRequest   {
     this.token = token;
   }
 
+  public CloudImagesDownloadRequest totalOffset(Long totalOffset) {
+    this.totalOffset = totalOffset;
+    return this;
+  }
+
+  /**
+   * Общее кол-во уже выгруженных файлов
+   * @return totalOffset
+  */
+  @ApiModelProperty(value = "Общее кол-во уже выгруженных файлов")
+
+
+  public Long getTotalOffset() {
+    return totalOffset;
+  }
+
+  public void setTotalOffset(Long totalOffset) {
+    this.totalOffset = totalOffset;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -171,15 +217,17 @@ public class CloudImagesDownloadRequest   {
     }
     CloudImagesDownloadRequest cloudImagesDownloadRequest = (CloudImagesDownloadRequest) o;
     return Objects.equals(this.cloudType, cloudImagesDownloadRequest.cloudType) &&
+        Objects.equals(this.maxCounts, cloudImagesDownloadRequest.maxCounts) &&
         Objects.equals(this.pathFrom, cloudImagesDownloadRequest.pathFrom) &&
         Objects.equals(this.pathTo, cloudImagesDownloadRequest.pathTo) &&
         Objects.equals(this.taskId, cloudImagesDownloadRequest.taskId) &&
-        Objects.equals(this.token, cloudImagesDownloadRequest.token);
+        Objects.equals(this.token, cloudImagesDownloadRequest.token) &&
+        Objects.equals(this.totalOffset, cloudImagesDownloadRequest.totalOffset);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(cloudType, pathFrom, pathTo, taskId, token);
+    return Objects.hash(cloudType, maxCounts, pathFrom, pathTo, taskId, token, totalOffset);
   }
 
   @Override
@@ -188,10 +236,12 @@ public class CloudImagesDownloadRequest   {
     sb.append("class CloudImagesDownloadRequest {\n");
     
     sb.append("    cloudType: ").append(toIndentedString(cloudType)).append("\n");
+    sb.append("    maxCounts: ").append(toIndentedString(maxCounts)).append("\n");
     sb.append("    pathFrom: ").append(toIndentedString(pathFrom)).append("\n");
     sb.append("    pathTo: ").append(toIndentedString(pathTo)).append("\n");
     sb.append("    taskId: ").append(toIndentedString(taskId)).append("\n");
     sb.append("    token: ").append(toIndentedString(token)).append("\n");
+    sb.append("    totalOffset: ").append(toIndentedString(totalOffset)).append("\n");
     sb.append("}");
     return sb.toString();
   }

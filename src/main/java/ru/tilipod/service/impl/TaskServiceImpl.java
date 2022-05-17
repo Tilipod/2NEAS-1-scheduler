@@ -194,6 +194,8 @@ public class TaskServiceImpl implements TaskService {
         request.setPathFrom(distribution.getPathToRemoteDataset());
         request.setPathTo(distribution.getPathToLocalDataset());
         request.setToken(distribution.getCloudToken());
+        request.setMaxCounts(task.getUser().getVipLevel().getDownloadBatchSize());
+        request.setTotalOffset(distribution.getTotal());
 
         distributorApi.downloadImagesFromCloudUsingPOST(request);
 
