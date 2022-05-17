@@ -116,7 +116,7 @@
             <column type="varchar" name="comment"/>
 
             <column type="bigint" name="user_id">
-                <constraints nullable="false" unique="true" foreignKeyName="task_user_foreign_key"
+                <constraints nullable="false" foreignKeyName="task_user_foreign_key"
                              references="security.user(id)" deleteCascade="true"/>
             </column>
 
