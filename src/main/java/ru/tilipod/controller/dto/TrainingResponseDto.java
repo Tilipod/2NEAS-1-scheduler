@@ -14,4 +14,7 @@ public class TrainingResponseDto {
 
     @ApiModelProperty(value = "Комментарий к статусу")
     private String comment;
+
+    @ApiModelProperty(value = "Текущая точность обучения сети")
+    private Double currentPrecision;
 }

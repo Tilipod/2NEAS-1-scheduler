@@ -7,11 +7,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.tilipod.controller.dto.TaskStatusChangeDto;
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
+import ru.tilipod.controller.dto.TrainingStatisticDto;
 import ru.tilipod.service.TaskService;
 
 import java.util.UUID;
@@ -48,9 +51,17 @@ public class ClientRequestController {
         return taskService.stopTask(taskId);
     }
 
-    @PostMapping("/{taskId}/redistribute")
-    @ApiOperation(value = "Откатить задачу и повторно выгрузить датасеты")
-    public Boolean redistribute(@PathVariable UUID taskId) {
-        return taskService.redistribute(taskId);
+    @PutMapping("/{taskId}/status")
+    @ApiOperation(value = "Обновить статус задачи по обучению нейронной сети")
+    public ResponseEntity<Void> changeTaskStatus(@PathVariable UUID taskId, @RequestBody TaskStatusChangeDto statusChangeDto) {
+        taskService.changeStatus(taskId, statusChangeDto);
+        return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{taskId}/statistic")
+    @ApiOperation(value = "Получить статистику обучения нейронной сети")
+    public TrainingStatisticDto getStatistic(@PathVariable UUID taskId) {
+        return taskService.getStatistic(taskId);
+    }
+
 }

@@ -1,7 +1,9 @@
 package ru.tilipod.service;
 
+import ru.tilipod.controller.dto.TaskStatusChangeDto;
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
+import ru.tilipod.controller.dto.TrainingStatisticDto;
 import ru.tilipod.jpa.entity.nneas.Task;
 import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 
@@ -30,8 +32,10 @@ public interface TaskService {
 
     Task changeStatus(Task task, TaskStatusEnum newStatus, String comment);
 
+    void changeStatus(UUID taskId, TaskStatusChangeDto statusChangeDto);
+
     boolean stopTask(UUID taskId);
 
-    boolean redistribute(UUID taskId);
+    TrainingStatisticDto getStatistic(UUID taskId);
 
 }

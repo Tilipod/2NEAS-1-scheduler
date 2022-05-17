@@ -7,8 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.tilipod.controller.dto.TaskStatusChangeDto;
 import ru.tilipod.controller.dto.TrainingRequestDto;
 import ru.tilipod.controller.dto.TrainingResponseDto;
+import ru.tilipod.controller.dto.TrainingStatisticDto;
 import ru.tilipod.controller.dto.distributor.CloudImagesDownloadRequest;
 import ru.tilipod.controller.dto.parser.NeuronNetworkDto;
 import ru.tilipod.controller.dto.teacher.TrainingDto;
@@ -21,6 +23,7 @@ import ru.tilipod.feign.api.ParserApi;
 import ru.tilipod.feign.api.TeacherApi;
 import ru.tilipod.jpa.entity.nneas.Distribution;
 import ru.tilipod.jpa.entity.nneas.NeuronNetwork;
+import ru.tilipod.jpa.entity.nneas.Precision;
 import ru.tilipod.jpa.entity.nneas.Task;
 import ru.tilipod.jpa.entity.nneas.enums.TaskStatusEnum;
 import ru.tilipod.jpa.entity.security.User;
@@ -28,6 +31,7 @@ import ru.tilipod.jpa.repository.nneas.TaskRepository;
 import ru.tilipod.service.CourceService;
 import ru.tilipod.service.DistributionService;
 import ru.tilipod.service.NeuronNetworkService;
+import ru.tilipod.service.PrecisionService;
 import ru.tilipod.service.TaskService;
 import ru.tilipod.service.UserService;
 import ru.tilipod.util.Constants;
@@ -37,6 +41,7 @@ import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -63,6 +68,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final TeacherApi teacherApi;
 
+    private final PrecisionService precisionService;
+
     @Override
     @Transactional(readOnly = true)
     public TrainingResponseDto getTaskStatusByProcessId(UUID processId) {
@@ -72,6 +79,11 @@ public class TaskServiceImpl implements TaskService {
 
         response.setStatus(task.getStatus());
         response.setComment(task.getComment());
+
+        Precision precision = precisionService.findLastByTaskId(task.getId());
+        if (precision != null) {
+            response.setCurrentPrecision(precision.getPrecision());
+        }
 
         return response;
     }
@@ -135,6 +147,23 @@ public class TaskServiceImpl implements TaskService {
         eventPublisher.publishEvent(new TaskStatusChangeEvent(this, task, newStatus));
 
         return task;
+    }
+
+    @Override
+    @Transactional
+    public void changeStatus(UUID taskId, TaskStatusChangeDto statusChangeDto) {
+        Task task = findByProcessId(taskId);
+        if (task == null) {
+            throw new EntityNotFoundException(String.format("Задача с processId = %s не найдена.", taskId), Task.class);
+        }
+
+        task.setStatus(statusChangeDto.getNewStatus());
+        task.setComment(statusChangeDto.getComment());
+
+        log.info("Пользователь с uuid = {} изменил статус задачи {} на {}",
+                statusChangeDto.getUserUuid(), task.getId(), task.getStatus());
+
+        taskRepository.save(task);
     }
 
     @Override
@@ -242,19 +271,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional
-    public boolean redistribute(UUID processId) {
-        Task task = findByProcessId(processId);
-
-        try {
-            changeStatus(task, TaskStatusEnum.ANALYZED, "Отправлена клиентом на повторный анализ");
-        } catch (Exception e) {
-            log.error("Неудачная редистрибьюция задачи {}. Причина: {}", task.getId(), e.getMessage());
-            return false;
+    @Transactional(readOnly = true)
+    public TrainingStatisticDto getStatistic(UUID taskId) {
+        Task task = findByProcessId(taskId);
+        if (task == null) {
+            throw new EntityNotFoundException(String.format("Задача с processId = %s не найдена.", taskId), Task.class);
         }
+        TrainingStatisticDto statistic = new TrainingStatisticDto();
 
-        log.info("Задача {} отправлена пользователем на обновление датасетов", task.getId());
-        return true;
+        statistic.setPrecisions(precisionService.findAllByTaskId(task.getId())
+                .stream()
+                .map(Precision::getPrecision)
+                .collect(Collectors.toList()));
+
+        return statistic;
     }
 
 }

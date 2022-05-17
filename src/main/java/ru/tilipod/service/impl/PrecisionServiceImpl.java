@@ -9,6 +9,8 @@ import ru.tilipod.jpa.entity.nneas.Precision;
 import ru.tilipod.jpa.repository.nneas.PrecisionRepository;
 import ru.tilipod.service.PrecisionService;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,5 +27,18 @@ public class PrecisionServiceImpl implements PrecisionService {
         entity.setCourse(course);
 
         precisionRepository.save(entity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Precision findLastByTaskId(Integer taskId) {
+        return precisionRepository.findTopByCourse_NeuronNetwork_TaskIdOrderByCreatedDateTimeDesc(taskId)
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Precision> findAllByTaskId(Integer taskId) {
+        return precisionRepository.findAllByCourse_NeuronNetwork_TaskIdOrderByCreatedDateTimeAsc(taskId);
     }
 }
