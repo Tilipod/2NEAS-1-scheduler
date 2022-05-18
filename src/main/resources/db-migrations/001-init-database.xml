@@ -177,6 +177,8 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column type="bigint" name="count_states"/>
+
             <column type="bigint" name="neuron_network_id">
                 <constraints nullable="false" unique="true" foreignKeyName="course_neuron_network_foreign_key"
                              references="neuron_network(id)" deleteCascade="true"/>
@@ -228,7 +230,7 @@
             </column>
 
             <column type="varchar" name="path_to_remote_dataset">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
 
             <column type="varchar" name="path_to_local_dataset">

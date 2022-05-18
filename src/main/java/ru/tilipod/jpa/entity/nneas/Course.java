@@ -41,7 +41,6 @@ public class Course {
     @NotNull
     private Integer countEpoch;
 
-    @NotNull
     private Integer countStates = 0;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
