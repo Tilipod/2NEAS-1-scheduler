@@ -48,6 +48,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
+    private static final int DEFAULT_COUNT_EPOCH_FOR_TRAINING = 1;
+
     private final TaskRepository taskRepository;
 
     private final ObjectMapper objectMapper;
@@ -202,6 +204,10 @@ public class TaskServiceImpl implements TaskService {
             return 0;
         }
 
+        if (net.getWithMentoring()) {
+            request.getReforcement().setCountEpoch(DEFAULT_COUNT_EPOCH_FOR_TRAINING);
+        }
+
         request.setTaskId(task.getId());
         request.setPathToSave(net.getPathToModel());
 
@@ -241,7 +247,7 @@ public class TaskServiceImpl implements TaskService {
         Distribution distribution = distributionService.findByTaskId(task.getId());
 
         request.setTaskId(task.getId());
-        request.setCountEpoch(1);
+        request.setCountEpoch(DEFAULT_COUNT_EPOCH_FOR_TRAINING);
         request.setCountOutput(net.getCountOutputs());
         request.setDatasetType(distribution.getDatasetType());
         request.setPathToDataset(distribution.getPathToLocalDataset());
