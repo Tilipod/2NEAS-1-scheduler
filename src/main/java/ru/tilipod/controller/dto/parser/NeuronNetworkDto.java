@@ -80,6 +80,9 @@ public class NeuronNetworkDto   {
   @JsonProperty("pretrain")
   private Boolean pretrain;
 
+  @JsonProperty("reforcement")
+  private ReforcementDto reforcement;
+
   @JsonProperty("regularization")
   private RegularizationDto regularization;
 
@@ -317,6 +320,27 @@ public class NeuronNetworkDto   {
     this.pretrain = pretrain;
   }
 
+  public NeuronNetworkDto reforcement(ReforcementDto reforcement) {
+    this.reforcement = reforcement;
+    return this;
+  }
+
+  /**
+   * Get reforcement
+   * @return reforcement
+  */
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public ReforcementDto getReforcement() {
+    return reforcement;
+  }
+
+  public void setReforcement(ReforcementDto reforcement) {
+    this.reforcement = reforcement;
+  }
+
   public NeuronNetworkDto regularization(RegularizationDto regularization) {
     this.regularization = regularization;
     return this;
@@ -438,6 +462,7 @@ public class NeuronNetworkDto   {
         Objects.equals(this.optimizationAlgo, neuronNetworkDto.optimizationAlgo) &&
         Objects.equals(this.pathToSave, neuronNetworkDto.pathToSave) &&
         Objects.equals(this.pretrain, neuronNetworkDto.pretrain) &&
+        Objects.equals(this.reforcement, neuronNetworkDto.reforcement) &&
         Objects.equals(this.regularization, neuronNetworkDto.regularization) &&
         Objects.equals(this.seed, neuronNetworkDto.seed) &&
         Objects.equals(this.taskId, neuronNetworkDto.taskId) &&
@@ -447,7 +472,7 @@ public class NeuronNetworkDto   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(backprop, inputType, iterations, layers, learningRate, optimizationAlgo, pathToSave, pretrain, regularization, seed, taskId, updater, weightInit);
+    return Objects.hash(backprop, inputType, iterations, layers, learningRate, optimizationAlgo, pathToSave, pretrain, reforcement, regularization, seed, taskId, updater, weightInit);
   }
 
   @Override
@@ -463,6 +488,7 @@ public class NeuronNetworkDto   {
     sb.append("    optimizationAlgo: ").append(toIndentedString(optimizationAlgo)).append("\n");
     sb.append("    pathToSave: ").append(toIndentedString(pathToSave)).append("\n");
     sb.append("    pretrain: ").append(toIndentedString(pretrain)).append("\n");
+    sb.append("    reforcement: ").append(toIndentedString(reforcement)).append("\n");
     sb.append("    regularization: ").append(toIndentedString(regularization)).append("\n");
     sb.append("    seed: ").append(toIndentedString(seed)).append("\n");
     sb.append("    taskId: ").append(toIndentedString(taskId)).append("\n");

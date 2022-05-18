@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Парсер, отвечающий за воспроизводство структуры нейронной сети по запросу клиента",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "title": "2NEAS-1-parser"
   },
   "host": "localhost:50006",
@@ -36,6 +36,14 @@
             "schema": {
               "$ref": "#/definitions/NeuronNetworkDto"
             }
+          },
+          {
+            "name": "withMentoring",
+            "in": "query",
+            "description": "withMentoring",
+            "required": false,
+            "type": "boolean",
+            "default": false
           }
         ],
         "responses": {
@@ -247,6 +255,10 @@
           "type": "boolean",
           "description": "Признак предварительного обучения"
         },
+        "reforcement": {
+          "description": "Настройки подкрепления при обучении",
+          "$ref": "#/definitions/ReforcementDto"
+        },
         "regularization": {
           "description": "Настройки регуляризации",
           "$ref": "#/definitions/RegularizationDto"
@@ -283,6 +295,47 @@
         }
       },
       "title": "NeuronNetworkDto"
+    },
+    "ReforcementDto": {
+      "type": "object",
+      "properties": {
+        "countEpoch": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Кол-во эпох для обучения"
+        },
+        "epsilonStep": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Знаменатель при вычислении случайного эпсилон"
+        },
+        "errorClamp": {
+          "type": "number",
+          "format": "double",
+          "description": "Допустимый разброс при накапливании вознаграждения"
+        },
+        "gamma": {
+          "type": "number",
+          "format": "double",
+          "description": "Гамма из уравнения Белла"
+        },
+        "minEpsilon": {
+          "type": "number",
+          "format": "float",
+          "description": "Минимальный эпсилон (см. про Exploration в RL)"
+        },
+        "rewardFactor": {
+          "type": "number",
+          "format": "double",
+          "description": "Коэффициент коррекции вознаграждения"
+        },
+        "updateStart": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Итерация, после которой происходит обновление нейронной сети (для RL)"
+        }
+      },
+      "title": "ReforcementDto"
     },
     "RegularizationDto": {
       "type": "object",

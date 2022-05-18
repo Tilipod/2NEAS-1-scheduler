@@ -64,6 +64,12 @@ public class NeuronNetworkServiceImpl implements NeuronNetworkService {
                 .orElse(null);
     }
 
+    @Override
+    @Transactional
+    public NeuronNetwork updateNetwork(NeuronNetwork nn) {
+        return neuronNetworkRepository.save(nn);
+    }
+
     private Integer searchCountOutputs(List<LayerDto> layers) {
         return layers.stream()
                 .filter(l -> LayerDto.LayerTypeEnum.OUTPUT.equals(l.getLayerType()))

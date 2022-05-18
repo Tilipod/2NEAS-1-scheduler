@@ -138,6 +138,8 @@
 
             <column type="boolean" name="with_mentoring" defaultValue="false"/>
 
+            <column type="varchar" name="json_rl_conf_structure"/>
+
             <column type="varchar" name="path_to_model">
                 <constraints nullable="false" unique="true"/>
             </column>

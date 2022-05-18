@@ -38,6 +38,8 @@ public class NeuronNetwork {
     @NotNull
     private String pathToModel;
 
+    private String jsonRlConfStructure;
+
     @NotNull
     private Integer countOutputs;
 

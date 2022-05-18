@@ -14,4 +14,6 @@ public interface NeuronNetworkService {
 
     NeuronNetwork findByTaskProcessId(UUID processId);
 
+    NeuronNetwork updateNetwork(NeuronNetwork nn);
+
 }

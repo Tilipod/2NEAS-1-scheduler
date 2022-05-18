@@ -205,7 +205,7 @@ public class TaskServiceImpl implements TaskService {
         request.setTaskId(task.getId());
         request.setPathToSave(net.getPathToModel());
 
-        parserApi.parseNeuronNetworkUsingPOST(request);
+        parserApi.parseNeuronNetworkUsingPOST(request, net.getWithMentoring());
 
         changeStatus(task, TaskStatusEnum.ANALYSIS, "Отправлена на анализ");
 
