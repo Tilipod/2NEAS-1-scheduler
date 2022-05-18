@@ -16,19 +16,21 @@ public interface TeacherApi {
      * POST /training/training/step : Провести обучение нейронной сети
      *
      * @param trainingDto trainingDto (required)
+     * @param withMentoring withMentoring (optional, default to false)
      * @return OK (status code 200)
      *         or Created (status code 201)
      *         or Unauthorized (status code 401)
      *         or Forbidden (status code 403)
      *         or Not Found (status code 404)
      */
-    @ApiOperation(value = "Провести обучение нейронной сети", nickname = "stepTrainingUsingPOST", notes = "", tags={ "training-controller", })
+    @ApiOperation(value = "Провести обучение нейронной сети", nickname = "stepTrainingUsingPOST", tags={ "training-controller" })
     @ApiResponses(value = {@ApiResponse(code = 200, message = "OK"),
                            @ApiResponse(code = 201, message = "Created"),
                            @ApiResponse(code = 401, message = "Unauthorized"),
                            @ApiResponse(code = 403, message = "Forbidden"),
                            @ApiResponse(code = 404, message = "Not Found") })
     @PostMapping(value = "/training/training/step", consumes = { "application/json" })
-    ResponseEntity<Void> stepTrainingUsingPOST(@ApiParam(value = "trainingDto", required=true)  @Valid @RequestBody TrainingDto trainingDto);
+    ResponseEntity<Void> stepTrainingUsingPOST(@ApiParam(value = "trainingDto", required=true)  @Valid @RequestBody TrainingDto trainingDto,
+                                               @ApiParam(value = "withMentoring", defaultValue = "false") @Valid @RequestParam(value = "withMentoring", required = false, defaultValue="false") Boolean withMentoring);
 
 }

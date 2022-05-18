@@ -41,6 +41,9 @@ public class Course {
     @NotNull
     private Integer countEpoch;
 
+    @NotNull
+    private Integer countStates = 0;
+
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "neuron_network_id")
     private NeuronNetwork neuronNetwork;

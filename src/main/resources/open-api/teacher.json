@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "description": "Учитель, отвечающий за обучение нейронных сетей",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "title": "2NEAS-1-teacher"
   },
   "host": "localhost:50005",
@@ -36,6 +36,14 @@
             "schema": {
               "$ref": "#/definitions/TrainingDto"
             }
+          },
+          {
+            "name": "withMentoring",
+            "in": "query",
+            "description": "withMentoring",
+            "required": false,
+            "type": "boolean",
+            "default": false
           }
         ],
         "responses": {
@@ -60,6 +68,63 @@
     }
   },
   "definitions": {
+    "QLConfiguration": {
+      "type": "object",
+      "properties": {
+        "seed": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxEpochStep": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxStep": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "expRepMaxSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "batchSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "targetDqnUpdateFreq": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "updateStart": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rewardFactor": {
+          "type": "number",
+          "format": "double"
+        },
+        "gamma": {
+          "type": "number",
+          "format": "double"
+        },
+        "errorClamp": {
+          "type": "number",
+          "format": "double"
+        },
+        "minEpsilon": {
+          "type": "number",
+          "format": "float"
+        },
+        "epsilonNbStep": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "doubleDQN": {
+          "type": "boolean"
+        }
+      },
+      "title": "QLConfiguration"
+    },
     "TrainingDto": {
       "type": "object",
       "required": [
@@ -81,6 +146,11 @@
           "format": "int32",
           "description": "Кол-во выходов нейронной сети"
         },
+        "countStates": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Количество состояний для обучения с подкреплением"
+        },
         "datasetType": {
           "type": "string",
           "description": "Тип данных для обучения сети",
@@ -95,6 +165,10 @@
         "pathToModel": {
           "type": "string",
           "description": "Путь к модели сети"
+        },
+        "reforcementConf": {
+          "description": "Конфигурация для обучения с подкреплением",
+          "$ref": "#/definitions/QLConfiguration"
         },
         "taskId": {
           "type": "integer",

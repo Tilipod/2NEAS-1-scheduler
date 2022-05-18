@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
+import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning;
+
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
@@ -16,6 +19,9 @@ public class TrainingDto   {
 
   @JsonProperty("countOutput")
   private Integer countOutput;
+
+  @JsonProperty("countStates")
+  private Integer countStates;
 
   /**
    * Тип данных для обучения сети
@@ -58,6 +64,9 @@ public class TrainingDto   {
 
   @JsonProperty("pathToModel")
   private String pathToModel;
+
+  @JsonProperty("reforcementConf")
+  private QLearning.QLConfiguration reforcementConf;
 
   @JsonProperty("taskId")
   private Integer taskId;
@@ -102,6 +111,26 @@ public class TrainingDto   {
 
   public void setCountOutput(Integer countOutput) {
     this.countOutput = countOutput;
+  }
+
+  public TrainingDto countStates(Integer countStates) {
+    this.countStates = countStates;
+    return this;
+  }
+
+  /**
+   * Количество состояний для обучения с подкреплением
+   * @return countStates
+  */
+  @ApiModelProperty(value = "Количество состояний для обучения с подкреплением")
+
+
+  public Integer getCountStates() {
+    return countStates;
+  }
+
+  public void setCountStates(Integer countStates) {
+    this.countStates = countStates;
   }
 
   public TrainingDto datasetType(DatasetTypeEnum datasetType) {
@@ -167,6 +196,27 @@ public class TrainingDto   {
     this.pathToModel = pathToModel;
   }
 
+  public TrainingDto reforcementConf(QLearning.QLConfiguration reforcementConf) {
+    this.reforcementConf = reforcementConf;
+    return this;
+  }
+
+  /**
+   * Get reforcementConf
+   * @return reforcementConf
+  */
+  @ApiModelProperty(value = "")
+
+  @Valid
+
+  public QLearning.QLConfiguration getReforcementConf() {
+    return reforcementConf;
+  }
+
+  public void setReforcementConf(QLearning.QLConfiguration reforcementConf) {
+    this.reforcementConf = reforcementConf;
+  }
+
   public TrainingDto taskId(Integer taskId) {
     this.taskId = taskId;
     return this;
@@ -200,15 +250,17 @@ public class TrainingDto   {
     TrainingDto trainingDto = (TrainingDto) o;
     return Objects.equals(this.countEpoch, trainingDto.countEpoch) &&
         Objects.equals(this.countOutput, trainingDto.countOutput) &&
+        Objects.equals(this.countStates, trainingDto.countStates) &&
         Objects.equals(this.datasetType, trainingDto.datasetType) &&
         Objects.equals(this.pathToDataset, trainingDto.pathToDataset) &&
         Objects.equals(this.pathToModel, trainingDto.pathToModel) &&
+        Objects.equals(this.reforcementConf, trainingDto.reforcementConf) &&
         Objects.equals(this.taskId, trainingDto.taskId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(countEpoch, countOutput, datasetType, pathToDataset, pathToModel, taskId);
+    return Objects.hash(countEpoch, countOutput, countStates, datasetType, pathToDataset, pathToModel, reforcementConf, taskId);
   }
 
   @Override
@@ -218,9 +270,11 @@ public class TrainingDto   {
     
     sb.append("    countEpoch: ").append(toIndentedString(countEpoch)).append("\n");
     sb.append("    countOutput: ").append(toIndentedString(countOutput)).append("\n");
+    sb.append("    countStates: ").append(toIndentedString(countStates)).append("\n");
     sb.append("    datasetType: ").append(toIndentedString(datasetType)).append("\n");
     sb.append("    pathToDataset: ").append(toIndentedString(pathToDataset)).append("\n");
     sb.append("    pathToModel: ").append(toIndentedString(pathToModel)).append("\n");
+    sb.append("    reforcementConf: ").append(toIndentedString(reforcementConf)).append("\n");
     sb.append("    taskId: ").append(toIndentedString(taskId)).append("\n");
     sb.append("}");
     return sb.toString();

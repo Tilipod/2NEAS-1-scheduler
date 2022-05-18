@@ -22,6 +22,9 @@ public class TrainingRequestDto {
     @ApiModelProperty(value = "Кол-во эпох для обучения нейросети")
     private Integer countEpoch;
 
+    @ApiModelProperty(value = "Кол-во состояний (для РЛ)")
+    private Integer countStates;
+
     @ApiModelProperty(value = "Тип данных для обучения нейросети")
     private TrainingDto.DatasetTypeEnum datasetType;
 

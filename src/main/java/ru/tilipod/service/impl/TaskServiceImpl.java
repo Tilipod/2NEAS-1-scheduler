@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deeplearning4j.rl4j.learning.sync.qlearning.QLearning;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import ru.tilipod.exception.SystemError;
 import ru.tilipod.feign.api.DistributorApi;
 import ru.tilipod.feign.api.ParserApi;
 import ru.tilipod.feign.api.TeacherApi;
+import ru.tilipod.jpa.entity.nneas.Course;
 import ru.tilipod.jpa.entity.nneas.Distribution;
 import ru.tilipod.jpa.entity.nneas.NeuronNetwork;
 import ru.tilipod.jpa.entity.nneas.Precision;
@@ -48,7 +50,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
-    private static final int DEFAULT_COUNT_EPOCH_FOR_TRAINING = 1;
+    private static final int DEFAULT_COUNT_EPOCH_FOR_DL_TRAINING = 1;
+    private static final int DEFAULT_COUNT_EPOCH_FOR_RL_TRAINING = 100;
 
     private final TaskRepository taskRepository;
 
@@ -205,7 +208,7 @@ public class TaskServiceImpl implements TaskService {
         }
 
         if (net.getWithMentoring()) {
-            request.getReforcement().setCountEpoch(DEFAULT_COUNT_EPOCH_FOR_TRAINING);
+            request.getReforcement().setCountEpoch(DEFAULT_COUNT_EPOCH_FOR_RL_TRAINING);
         }
 
         request.setTaskId(task.getId());
@@ -244,16 +247,31 @@ public class TaskServiceImpl implements TaskService {
     public int prepareAndSendToTeacher(Task task) {
         TrainingDto request = new TrainingDto();
         NeuronNetwork net = neuronNetworkService.findByTaskId(task.getId());
+        Course course = courceService.findByTaskId(task.getId());
         Distribution distribution = distributionService.findByTaskId(task.getId());
 
         request.setTaskId(task.getId());
-        request.setCountEpoch(DEFAULT_COUNT_EPOCH_FOR_TRAINING);
         request.setCountOutput(net.getCountOutputs());
         request.setDatasetType(distribution.getDatasetType());
         request.setPathToDataset(distribution.getPathToLocalDataset());
         request.setPathToModel(net.getPathToModel());
 
-        teacherApi.stepTrainingUsingPOST(request);
+        if (net.getWithMentoring()) {
+            request.setCountStates(course.getCountStates());
+            request.setCountEpoch(DEFAULT_COUNT_EPOCH_FOR_RL_TRAINING);
+            try {
+                request.setReforcementConf(objectMapper.readValue(net.getJsonRlConfStructure(), QLearning.QLConfiguration.class));
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                log.error("Ошибка восстановления json-структуры РЛ-конфигурации по задаче {}", task.getId());
+                changeStatus(task, TaskStatusEnum.SYSTEM_ERROR, "Ошибка восстановления json-структуры РЛ-конфигурации");
+                return 0;
+            }
+        } else {
+            request.setCountEpoch(DEFAULT_COUNT_EPOCH_FOR_DL_TRAINING);
+        }
+
+        teacherApi.stepTrainingUsingPOST(request, net.getWithMentoring());
 
         changeStatus(task, TaskStatusEnum.TRAINING, "Отправлена на обучение");
 

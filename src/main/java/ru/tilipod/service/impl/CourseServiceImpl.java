@@ -25,6 +25,7 @@ public class CourseServiceImpl implements CourceService {
         Course course = new Course();
 
         course.setCountEpoch(request.getCountEpoch());
+        course.setCountStates(request.getCountStates());
         course.setNeuronNetwork(net);
         course.setCurrentEpoch(0);
 
